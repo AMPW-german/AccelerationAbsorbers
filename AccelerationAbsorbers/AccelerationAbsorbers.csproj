@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\tooling\msbuild\KsaMod.props" />
+
+	<PropertyGroup>
+		<ModName>AccelerationAbsorbers</ModName>
+		<VersionPrefix>0.1.0</VersionPrefix>
+		<AssemblyVersion>0.1.0.0</AssemblyVersion>
+
+		<Company>AMPW</Company>
+		<Authors>AMPW</Authors>
+		<Description>KSA mod to absorb high acceleration</Description>
+		<Copyright>MIT</Copyright>
+	</PropertyGroup>
+
+	<Import Project="..\tooling\msbuild\KsaMod.targets" />
+</Project>
