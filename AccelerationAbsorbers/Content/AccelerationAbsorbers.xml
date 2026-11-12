@@ -1,0 +1,15 @@
+<Assets>
+	<!-- Example: attach an acceleration absorber to a crewed vanilla command capsule.
+	     The module is measurement-space only: it reduces the G-force the crew and
+	     KSA's structural/crew-effect systems observe, at an electrical power cost.
+	     Tune MaxGLoad / power figures per part as needed. -->
+	<Part Id="CoreCommandA_Prefab_MediumCapsuleVariantA" Modify="Patch">
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="20" MinDelayMs="50" MaxDelayMs="200">
+				<BasePower W="50" />
+				<PowerPerGLoad W="2" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+</Assets>

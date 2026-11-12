@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\tooling\msbuild\KsaMod.props" />
+
+	<PropertyGroup>
+		<AssemblyName>AccelerationAbsorbers.Contracts</AssemblyName>
+		<RootNamespace>AccelerationAbsorbers.Contracts</RootNamespace>
+		<IncludeHarmony>false</IncludeHarmony>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<_KsaCoreDllDir>$(KSADir)</_KsaCoreDllDir>
+		<_KsaCoreDllDir Condition="'$(UseKsaNuGetPackages)' == 'true' and !Exists('$(KSADir)KsaNuGet.props') and '$(KSADllRepoDir)' != '' and Exists('$(KSADllRepoDir)KSA.dll')">$(KSADllRepoDir)</_KsaCoreDllDir>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="KSA">
+			<HintPath>$(_KsaCoreDllDir)KSA.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Brutal.Numerics" Condition="'$(UseKsaNuGetPackages)' != 'true'">
+			<HintPath>$(KSADir)Brutal.Numerics.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+</Project>

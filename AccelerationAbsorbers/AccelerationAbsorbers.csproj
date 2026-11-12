@@ -12,5 +12,11 @@
 		<Copyright>MIT</Copyright>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\AccelerationAbsorbers.Contracts\AccelerationAbsorbers.Contracts.csproj" />
+		<None Include="Content\AccelerationAbsorbers.xml" ModManifestArray="assets" CopyToOutputDirectory="PreserveNewest" />
+		<StarMapExportedAssembly Include="AccelerationAbsorbers.Contracts" />
+	</ItemGroup>
+
 	<Import Project="..\tooling\msbuild\KsaMod.targets" />
 </Project>
