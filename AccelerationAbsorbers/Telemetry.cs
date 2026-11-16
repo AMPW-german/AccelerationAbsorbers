@@ -20,11 +20,13 @@ internal struct AbsorberModuleRow
 	public double AbsorbedG;
 
 	public double MaxGLoad;
+
+	public double MaxPowerW;
 }
 
 internal sealed class VehicleAbsorberTelemetry
 {
-	public VehicleAbsorberTelemetry(string vehicleId, double simTimeSeconds, double3 rawG, double3 effectiveG, double absorbedG, double absorbedFraction, double totalCapacityG, double totalPowerW, int activeModuleCount, AbsorberModuleRow[] modules)
+	public VehicleAbsorberTelemetry(string vehicleId, double simTimeSeconds, double3 rawG, double3 effectiveG, double absorbedG, double absorbedFraction, double totalCapacityG, double totalDeliverableG, double totalPowerW, int activeModuleCount, AbsorberModuleRow[] modules)
 	{
 		VehicleId = vehicleId;
 		SimTimeSeconds = simTimeSeconds;
@@ -33,6 +35,7 @@ internal sealed class VehicleAbsorberTelemetry
 		AbsorbedG = absorbedG;
 		AbsorbedFraction = absorbedFraction;
 		TotalCapacityG = totalCapacityG;
+		TotalDeliverableG = totalDeliverableG;
 		TotalPowerW = totalPowerW;
 		ActiveModuleCount = activeModuleCount;
 		Modules = modules;
@@ -52,6 +55,8 @@ internal sealed class VehicleAbsorberTelemetry
 
 	public double TotalCapacityG { get; }
 
+	public double TotalDeliverableG { get; }
+
 	public double TotalPowerW { get; }
 
 	public int ActiveModuleCount { get; }
@@ -65,9 +70,9 @@ internal static class AbsorberTelemetry
 
 	private static readonly ConcurrentDictionary<Vehicle, VehicleAbsorberTelemetry> s_entries = new ConcurrentDictionary<Vehicle, VehicleAbsorberTelemetry>();
 
-	public static void Publish(Vehicle vehicle, UniverseTime simTime, double3 rawG, double3 effectiveG, double absorbedG, double absorbedFraction, double totalCapacityG, double totalPowerW, int activeModuleCount, AbsorberModuleRow[] modules)
+	public static void Publish(Vehicle vehicle, UniverseTime simTime, double3 rawG, double3 effectiveG, double absorbedG, double absorbedFraction, double totalCapacityG, double totalDeliverableG, double totalPowerW, int activeModuleCount, AbsorberModuleRow[] modules)
 	{
-		s_entries[vehicle] = new VehicleAbsorberTelemetry(vehicle.Id, simTime.Seconds(), rawG, effectiveG, absorbedG, absorbedFraction, totalCapacityG, totalPowerW, activeModuleCount, modules);
+		s_entries[vehicle] = new VehicleAbsorberTelemetry(vehicle.Id, simTime.Seconds(), rawG, effectiveG, absorbedG, absorbedFraction, totalCapacityG, totalDeliverableG, totalPowerW, activeModuleCount, modules);
 	}
 
 	public static List<VehicleAbsorberTelemetry> GetEntries()

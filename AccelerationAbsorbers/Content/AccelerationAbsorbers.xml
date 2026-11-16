@@ -7,6 +7,7 @@
 		<Components Modify="Extend">
 			<AccelerationAbsorber MaxGLoad="20" MinDelayMs="50" MaxDelayMs="200">
 				<BasePower W="50" />
+				<MaxPower W="1000" />
 				<PowerPerGLoad W="2" />
 				<PowerPerTonne W="1" />
 			</AccelerationAbsorber>

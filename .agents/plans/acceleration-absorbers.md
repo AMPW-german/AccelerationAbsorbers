@@ -32,6 +32,17 @@ from the wiki page applies).
   persisted in save data) plus per-module stats in `DrawStateInfo`.
 - A management ImGui window lists all absorbers: power draw, current/max absorbed
   G, and raw G (magnitude + per-axis) per vehicle.
+- Each module has a max power draw (`MaxPower`, W; `<= 0` = uncapped). Total
+  consumption is clamped to it and the existing power-deficit scaling delivers
+  proportionally less absorption. Because the draw is mass-proportional, the cap
+  makes larger ships get proportionally less absorption — the "one absorber can't
+  carry a capital ship" limit emerges from the wattage rating, no mass/coverage
+  stat needed. N modules → N× budget, same pooling as `MaxGLoad`.
+- Throttle-cap bonus uses *deliverable* capacity, not installed `Σ MaxGLoad`:
+  per enabled module `min(MaxGLoad, capImpliedG)` where
+  `capImpliedG = (MaxPower − BasePower) / (massTonnes × PowerPerGLoad × PowerPerTonne)`
+  (uncapped or zero coefficients ⇒ `MaxGLoad`), summed per vehicle. Battery state
+  is ignored — theoretical limit at current mass.
 
 ## Key KSA internals (verified against KSA.dll 2026.11.10.5801 decompile)
 
@@ -158,17 +169,40 @@ Per physics sub-step, per vehicle (worker thread):
 
 ```
 UpdateModulesJob → VehicleUpdateState.UpdateModules(subStep)     [module updates]
-    └─ AA.UpdateModules (postfix):
-         for each AccelerationAbsorber module+state (vehicle-wide via Updaters):
-           rawG     = state.LastRawG (freshness-checked)
-           clampedG = min(rawG, MaxGLoad)
-           enqueue |ΔclampedG|>eps, ready=now+rand(minDelay,maxDelay);
-           flush due deltas → state.CommandedAbsorptionG (queue on module instance)
+    └─ AA.UpdateModules (postfix), two passes over module+state pairs:
+         pass 1 — per module:
+           rawG       = state.LastRawG (fresh, finite) else 0
+           delayedG_i = module.TickDelayQueue(step, rawG)
+                          // per-module queue+EMA → delayed estimate of rawG
+           deliverable_i = Enabled ? min(MaxGLoad, capImpliedG or MaxGLoad) : 0
+                          // theoretical — globalState/throttle bonus/clamp
+           effective_i  = adaptive delivered-capability estimate:
+                          0 if !ResourceAvailable; else _effectiveDeliverableG
+                          which DROPS to last-delivered CommandedAbsorptionG
+                          when prev TargetAbsorptionG > CommandedAbsorptionG
+                          (proof of power deficit) and recovers toward
+                          theoretical with tau=0.2 s otherwise
+           accumulate: requiredG = max(rawG);  ΣeffectiveG;
+                          store deliverable_i[], effectiveG_i[], delayedG_i[]
+         aggregate (array passes):
+           shareG_i    = min(delayedG_i × effective_i/ΣeffectiveG, effective_i)
+                          // capacity-proportional delayed share; queue is linear
+                          // so scaling the delayed rawG ≡ delaying the share
+           floorG      = min(requiredG, ΣeffectiveG)    // current requirement
+           deficit     = max(0, floorG − ΣshareG_i)     // only when UNDER-delivering
+           iterative headroom-fill: distribute deficit ∝ (effective_i − shareG_i
+                          − boost_i) into boost_i[] until covered/exhausted
+         pass 2 — per module i:
+           _boostG_i    = EMA(boost_i, tau=(MinDelayMs+MaxDelayMs)/2 ms, cap 0.25 s)
+                          // coverage ramps in with ~queue-delay — modules keep
+                          // a delay before increasing even via the deficit fill
+           commandedG_i  = min(shareG_i + _boostG_i, deliverable_i)
            gate     = Enabled && ResourceAvailable
-           power    = gate ? BasePower + massTonnes×PowerPerGLoad×cmd×PowerPerTonne : 0
+           power    = gate ? min(BasePower + massTonnes×PowerPerGLoad×cmd×PowerPerTonne,
+                              MaxPower if > 0 else ∞) : 0
            joules   = watts.Integrate(dt); Consume(...); state.ConsumedWatts = actual
-           write state: CommandedAbsorptionG, ConsumedWatts, Active, AbsorbedG=0
-           aggregate into GlobalState: Σcapacity, Σpower, commanded totals
+           write state: CommandedAbsorptionG = cmd×powerScale, ConsumedWatts, Active
+           aggregate into GlobalState: Σcapacity, ΣdeliverableG, Σpower, commanded totals
            publish vehicle telemetry snapshot (rawG vec, absorbed, per-module rows)
 
 Integration (VelocityVerlet / Rk8 / constrained) → KinematicMeasurements
@@ -209,10 +243,10 @@ On the analytic path the same one-window latency applies.
 - `SaveData : SaveDataBase` — `[XmlType(TypeName = "AccelerationAbsorberData")]`
   with `[XmlAttribute("Active")] bool` storing the `Enabled` desired-state
   (same convention as `PowerConsumer.SaveData`).
-- Fields from template: `BasePower` (`PowerReference`→`Watts`), `PowerPerGLoad`
-  and `PowerPerTonne` (`PowerReference`→`Watts`, dimensionless coefficients —
-  absorption power = massTonnes×PowerPerGLoad×absorbedG×PowerPerTonne), `MaxGLoad` (double, g),
-  `MinDelayMs`, `MaxDelayMs` (double, ms→s), `PowerManager`, `Parent`, config snapshot.
+- Fields from template: `BasePower`, `MaxPower`, `PowerPerGLoad`
+  and `PowerPerTonne` (`PowerReference`→`Watts`; `MaxPower <= 0` = uncapped),
+  `MaxGLoad` (double, g), `MinDelayMs`, `MaxDelayMs` (double, ms→s), `PowerManager`,
+  `Parent`, config snapshot.
 - Instance fields: `Enabled` (player desired-state, default true — the toggle),
   delay-event buffer ordered by `readySimTime` (sorted array / min-heap, ~256
   entries) + `commanded`/`lastClampedG`/`residual` accumulators, `Random` for
@@ -247,45 +281,104 @@ entries ordered by ready time (managed scratch, transient, not saved; reseeded o
 load — see algorithm).
 
 `AccelerationAbsorberGlobalState` (per vehicle):
-`TotalCapacityG`, `TotalCommandedG`, `TotalPowerW`,
+`TotalCapacityG`, `TotalDeliverableG` (Σ per-module deliverable-at-current-mass,
+enabled modules only — throttle bonus source), `TotalCommandedG`, `TotalPowerW`,
 `RawG` (double3 — magnitude derivable, per-axis for UI/API), `AbsorbedG`,
 `EffectiveGX/Y/Z`, `ActiveModuleCount`, `LastIngestSimSeconds`.
 
-### 3. Absorption algorithm (per module, in `UpdateModules`)
+### 3. Absorption algorithm (per module queue + vehicle-level distribution)
 
-Delay = transport queue over the **capacity-clamped** signal:
+Each module keeps an **individual** delay queue, but all queues track the same
+unclamped signal — capacity is enforced at distribution time, not in the queue:
 
 ```
+// per module, in TickDelayQueue(step, rawG):
 rawG      = state.LastRawG if (Step.NextTime - LastRawGSimSeconds) < staleness
-            else 0                    // analytic-freefall guard
-clampedG  = min(rawG, MaxGLoad)       // queue never exceeds capacity
+            and finite, else 0              // analytic-freefall / NaN guard
+signalG   = max(0, rawG)                    // unclamped — queue sees vehicle G
 
 // buffer on module instance: (readySimTime, deltaG) entries kept ORDERED BY
 // readySimTime (sorted insert / min-heap — random delays break enqueue order;
 // a later delta can become due before an earlier one). ~256 entries.
-// commanded: instance accumulator seeded = clampedG on first update / after load
-residual += clampedG - lastClampedG          // accumulate sub-eps drift
+// commanded: instance accumulator seeded = signalG on first update / after load
+residual += signalG - lastSignalG           // accumulate sub-eps drift
 if |residual| > eps:                          // eps ~1e-4 g, kills float-noise flooding
     insert(residual, ready = Step.NextTime + rand(minDelay,maxDelay)); residual = 0
-lastClampedG = clampedG
+lastSignalG = signalG
 while head.readySimTime <= Step.NextTime:    // head = earliest ready entry
     commanded += head.deltaG; dequeue
-if queue full: commanded = clampedG; clear    // rare overflow → snap-resync
-commanded = clamp(commanded, 0, MaxGLoad)   // safety; queue math keeps it in range
-state.CommandedAbsorptionG = commanded      // ingest reads this
+if queue full: commanded = signalG; clear     // rare overflow → snap-resync
+// commanded is NOT clamped — deltas telescope exactly (Σ enqueued deltas =
+// signalG − seed), so partial sums may dip below 0 transiently when random
+// delays flush negative deltas first. Clamping here would permanently lose
+// that negative area and leave commanded offset HIGH forever (the "pinned at
+// 20 g after a crash" bug). Output is clamped instead: delayedG_i = max(0,
+// smoothed); the EMA tracks commanded including transient negatives.
+//
+// stall watchdog: enqueued deltas telescope ⇒
+//   _commandedG + _pendingDeltaSum + _residualG ≡ signalG   (exact, ~1e-15)
+// _pendingDeltaSum tracks Σ(enqueued − flushed) in O(1). Each tick, if the
+// accounting diverges from signalG by > DriftEpsilonG (1e-3) or goes
+// non-finite — i.e. a delta was lost, a clamp crept back, or NaN slipped in —
+// the queue snap-resyncs (_commandedG = _smoothedG = signalG, queue cleared).
+// Shares the overflow resync path; should never trigger in healthy operation.
+// per-module EMA smoothing of the reconstruction:
+//   tau = clamp((MaxDelayMs - MinDelayMs) × 0.00025 s, 0..0.25)
+//   alpha = 1 - exp(-dt / tau);  smoothed += (commanded - smoothed) × alpha
+//   (tau = 0 for constant delay ⇒ smoothed = commanded, no extra lag)
+delayedG_i = smoothed                        // this module's delayed raw-G estimate
+```
 
-// gates — immediate, no delay (physical constraint / player command)
+Vehicle-level distribution (UpdateModules, two passes + array aggregate):
+
+```
+// effective_i = adaptive estimate of what module i can actually deliver now:
+//   0 when !ResourceAvailable; otherwise _effectiveDeliverableG which drops
+//   instantly to last-tick CommandedAbsorptionG when
+//   TargetAbsorptionG > CommandedAbsorptionG + eps (proof the power budget
+//   fell short — NOT merely low demand), and recovers toward theoretical
+//   deliverable with tau = 0.2 s otherwise. Delivered-amount alone can't
+//   measure capability (low rawG ⇒ low delivered legitimately), so the
+//   deficit signature is required.
+shareG_i    = min(delayedG_i × effective_i / ΣeffectiveG, effective_i)
+              // each module's delayed, capacity-proportional share of rawG,
+              // weighted by EFFECTIVE (adaptive) capacity so a power-limited
+              // module's share shrinks and healthy modules pick it up.
+floorG      = min(requiredG_now, ΣeffectiveG)
+deficit     = max(0, floorG − ΣshareG_i)     // ONLY when under-delivering —
+              // all-high spool-down gives deficit 0 (untouched)
+boost_i     = iterative ∝-headroom fill of deficit into
+              (effective_i − shareG_i − boost_i), ≤ moduleCount rounds
+commanded_i = min(shareG_i + EMA(boost_i), deliverable_i)
+              // boost EMA tau = (MinDelayMs+MaxDelayMs)/2 ms (cap 0.25 s) ⇒
+              // coverage ramps in with ~the queue delay — modules keep a
+              // delay before increasing even through the deficit fill.
+```
+
+Result: `Σcommanded_i ≈ min(floorG, coverable)` once boost EMAs settle ⇒
+experienced G stays 0 through module desync and partial power failures.
+On ramp-down `ΣshareG_i > floorG` ⇒ deficit = 0 ⇒ pure delayed spool-down.
+Ramp-up deficit coverage is delayed by the boost EMA rather than instant —
+per-module commanded still lags; the vehicle may leak G for ~the boost
+tau while coverage ramps in (the intended delay behavior).
+
+Then per module (pass 2):
+
+```
 gateOpen  = module.Enabled && PowerManager.ResourceAvailable(batteryStates)
 if gateOpen:
-    powerW = BasePower + massTonnes×PowerPerGLoad×commanded×PowerPerTonne
+    requiredW = BasePower + massTonnes×PowerPerGLoad×commandedG×PowerPerTonne
+    if MaxPower > 0: requiredW = min(requiredW, MaxPower)   // hard draw ceiling
     joules = watts.Integrate(dt); Consume(...); state.ConsumedWatts = actual
-    // deficit scaling: effective commanded = commanded × clamp(
-    //   (actualW − BasePower) / (mass×perG×commanded×perTonne), 0, 1)
+    // deficit scaling: effective commanded = commandedG × clamp(
+    //   (actualW − BasePower) / (mass×perG×commandedG×perTonne), 0, 1)
+    // — denominator stays the UNCAPPED requirement, so the cap and battery
+    //   shortfall compose through the same ratio.
+    state.CommandedAbsorptionG = commandedG × powerScale
     state.Active = actual > 0
 else:
     consume nothing; state.ConsumedWatts = 0; state.Active = false
-    // commanded stays computed (queue keeps tracking); ingest must apply
-    // gateOpen per module — see below
+    // queues keep tracking; ingest applies gateOpen per module — see below
 ```
 
 Ingest side (per vehicle): per-module effective command =
@@ -295,19 +388,56 @@ Ingest side (per vehicle): per-module effective command =
 by `(1 - fraction)`.
 
 Properties:
-- Constant delay τ ⇒ `commanded(t) = clampedG(t−τ)` — pure phase shift.
-- Variable per-event τ ⇒ distorted reconstruction (intended).
-- G decrease: negative deltas still queued → commanded stays high → power draw
-  stays high briefly; `absorbed ≤ rawG` ⇒ never negative G. ✓ spec.
+- Constant delay τ ⇒ `delayedG_i(t) ≈ rawG(t−τ_i)` per module — pure phase
+  shift; variable per-event τ ⇒ distorted reconstruction (intended).
+- Per-module delay preserved: each queue reconstructs `rawG(t−τ_i)` with
+  independent random delays; `shareG_i = delayedG_i × effective_i/Σeffective`
+  gives each module its own delayed capacity-proportional target ⇒ different
+  absorption rates during transitions (no forced equalization). At steady
+  state all `delayedG_i ≈ rawG` ⇒ shares ∝ effective capacity ⇒ proportional.
+- 0 g priority via deficit coverage: `floorG = min(rawG_now, Σeffective)`;
+  deficit fires ONLY when delayed shares under-deliver (all-high spool-down
+  ⇒ deficit 0, untouched). The shortfall fills ∝ headroom
+  (`effective_i − shareG_i − boost_i`) — lagging modules cover what
+  ahead-of-schedule ones can't. The boost then passes through a per-module
+  EMA (`tau = mean queue delay`) so coverage itself ramps in with delay —
+  modules keep a delay before increasing even via the fill.
+- Power-failure coverage: `effective_i` is an adaptive estimate — drops to
+  last-delivered G when `TargetAbsorptionG > CommandedAbsorptionG` proves a
+  power deficit (delivered-amount alone can't distinguish "needed less"
+  from "couldn't"), recovers toward theoretical with tau=0.2 s. A browned-out
+  or unpowered module's share shrinks ⇒ healthy modules cover; `0` when
+  `ResourceAvailable` fails outright. `deliverable_i` (theoretical) still
+  caps commanded and feeds the throttle bonus.
+- Limited absorbers handled structurally: `deliverable_i` folds in `MaxGLoad`
+  and `MaxPower`→`capImpliedG`; shares/headroom use `effective_i` so
+  power-limited modules get smaller shares automatically. Saturated shares
+  clamp to `effective_i` before summing so excess demand redistributes.
+- Delay asymmetry: ramp-down keeps full spool-down delay; ramp-up coverage
+  arrives via the delayed boost EMA ⇒ vehicle may leak G for ~boost tau
+  while coverage ramps (intended delay, not a bug). `absorbed ≤ rawG` at
+  ingest ⇒ never negative G. ✓
+- Non-finite guard: `rawG` NaN/∞ is rejected in `Apply` (never written to
+  `LastRawG`) and in `UpdateModules` (treated as stale → 0). Previously a
+  single NaN sample poisoned `_residualG` permanently (`|NaN| > eps` is
+  always false → no delay events ever enqueued → commanded froze at its last
+  value — the "stuck at 20 g on the pad" bug).
+- Delta conservation: `_commandedG` must stay unclamped so enqueued deltas
+  telescope exactly. Violent signals (crash spikes) produce negative partial
+  sums when random delays flush drop-deltas before rise-deltas; clamping at
+  0 loses that area ⇒ permanent positive offset ⇒ absorption pinned at
+  capacity. Observed as "stuck at 20 g after crashing on the pad".
 - Power loss/toggle-off: `state.Active=false` → effective command 0 **this
   substep** — immediate physical cutoff; queue continues so power-up resumes
-  the delayed signal (no artificial restart transient).
+  the delayed signal (no artificial restart transient). Disabled modules get
+  `deliverable_i = 0` ⇒ zero share and zero headroom, but their queues keep
+  tracking, so re-enabling rejoins seamlessly.
 - Queue sizing: `maxDelay / minSubstep + margin` entries (~256 covers 1 s at
-  4 ms); overflow policy = snap `commanded` to `clampedG` and clear (rare —
+  4 ms); overflow policy = snap `commanded` to `signalG` and clear (rare —
   needs >1 s of continuous change at max delay — and self-healing).
 - Save/load: queue is transient — on first update after load, seed
-  `lastClampedG = commanded = clampedG(now)` so the absorber starts synced to
-  current G rather than replaying a stale history.
+  `lastSignalG = commanded = smoothed = signalG(now)` so the absorber starts
+  synced to current G rather than replaying a stale history.
 - "Active" semantics: `Enabled` (player toggle, default true) && power
   available. Only `BasePower` is drawn at zero commanded G; the absorption
   term (mass×perG×G×perTonne) scales with commanded absorption and is the
@@ -368,12 +498,16 @@ The `0.9f` is a literal inside the method — AA keeps a named constant mirrorin
 if KSA changes the factor the bonus is slightly mis-scaled (tunable, low risk).
 
 Bonus source: static `ConditionalWeakTable<FlightComputer, double>` mapping each
-vehicle's flight computer to `Σ MaxGLoad` over its absorber modules, populated by
-the ingest prefix and surface patch (`vehicleState.FlightComputer` is the same
-instance `ComputeControl` later uses; self-heals if `NewFlightComputer` is ever
-recreated). Bonus uses **installed capacity regardless of battery state** — if
-power is insufficient or capacity is exceeded, G comes through and the vessel can
-still be destroyed. That passthrough is intended: the player owns the risk.
+vehicle's flight computer to the vehicle's `TotalDeliverableG` — Σ over **enabled**
+modules of `min(MaxGLoad, capImpliedG)` at current mass (see algorithm; uncapped
+modules contribute `MaxGLoad`). Computed in `UpdateModules` where `massTonnes`
+is already in hand, read from `updater.GlobalState` in the ingest/surface patches
+(`vehicleState.FlightComputer` is the same instance `ComputeControl` later uses;
+self-heals if `NewFlightComputer` is ever recreated). Battery state is ignored —
+the bonus reflects the theoretical deliverable limit, so insufficient charge or
+G above delivered capacity still passes through and can destroy the vessel. That
+passthrough is intended: the player owns the risk. Disabled modules contribute
+nothing (player intent, not power insufficiency).
 
 ### 5. XML serializer self-registration (`XmlRegistration.cs`)
 
@@ -389,19 +523,22 @@ still be destroyed. That passthrough is intended: the player owns the risk.
 
 ```xml
 <Assets>
-  <!-- example: attach to an existing crewed part -->
-  <Part Id="<chosen vanilla part>" Modify="Patch">
+  <!-- example: attach an acceleration absorber to a crewed vanilla command capsule -->
+  <Part Id="CoreCommandA_Prefab_MediumCapsuleVariantA" Modify="Patch">
     <Components Modify="Extend">
-      <AccelerationAbsorber BasePowerW="50" PowerPerGLoadW="10"
-                          PowerPerTonneW="5" MaxGLoad="20"
-                          MinDelayMs="50" MaxDelayMs="200" />
+      <AccelerationAbsorber MaxGLoad="20" MinDelayMs="50" MaxDelayMs="200">
+        <BasePower W="50" />
+        <MaxPower W="1000" />
+        <PowerPerGLoad W="2" />
+        <PowerPerTonne W="1" />
+      </AccelerationAbsorber>
     </Components>
   </Part>
 </Assets>
 ```
 
-Exact element/attribute shape finalized with the `Template` fields (PowerReference
-children vs plain attributes — follow `PowerConsumer` conventions).
+Power fields are `PowerReference` child elements (same convention as
+`PowerConsumer`); `MaxPower <= 0` means uncapped.
 
 ### 7. Cross-mod API
 
@@ -455,9 +592,9 @@ Not affected: trajectory/delta-v/fuel, `DeltaVelocityCci`, `AngularAccelerationB
 - `AngularAccelerationBody` absorption.
 - Absorb a configurable minimum-G threshold (e.g. ignore the 1 g pad load while
   still covering gas-giant gravity) — v1 absorbs all magnitude per spec.
-- Throttle-cap bonus scaled by state of charge / active modules instead of
-  installed capacity (v1 intentionally uses installed capacity — G passthrough
-  under insufficient power is a feature, not a bug).
+- Throttle-cap bonus further scaled by actual battery state / active modules —
+  v1 uses deliverable-at-current-mass (enabled modules, power cap applied,
+  battery ignored); G passthrough under insufficient charge is a feature.
 - KittenExtensions content patching (not needed — vanilla `Modify` covers it).
 
 ## Risks / open questions
@@ -484,16 +621,21 @@ Not affected: trajectory/delta-v/fuel, `DeltaVelocityCci`, `AngularAccelerationB
   must be immutable snapshots + thread-safe publication; prune destroyed vehicles.
 - Throttle-cap bonus mirrors the `0.9f` literal inside `SolveGLoadThrottleCap`;
   a KSA update changing that factor mis-scales the bonus (low risk, tunable).
-- Which vanilla part to patch in the example XML — pick during implementation.
+- `MaxPower <= 0` means uncapped — a modder omitting it gets unlimited draw
+  (backward compatible, but the mass-limit guarantee silently disappears).
+- `capImpliedG` divides by `massTonnes × PowerPerGLoad × PowerPerTonne`; zero
+  coefficients mean free absorption ⇒ treated as uncapped for both the draw cap
+  and the deliverable bonus.
 
 ## Implementation steps
 
-- [ ] Create `AccelerationAbsorbers.Contracts` project + `IGForceDataProvider`/`VehicleGForceSnapshot`; wire `ExportedAssemblies`/project reference.
-- [ ] `AccelerationAbsorber.cs`: Template/SaveData/state structs/module class (`CreateComponents`, `CreateStates`, `UpdateModules`, `RecreateManager`, `OnDrawUi`, save-data overrides, `DrawStateInfo`).
-- [ ] `XmlRegistration.cs`: override registration for `PartTemplate.Components` (XmlArrayItems) + `PartInstance.Components` (XmlElements), both override instances.
-- [ ] `Patches.cs`: Harmony patches — CreateModules postfix, UpdateModules postfix, Ingest prefix (absorption math + state writeback + throttle-bonus map + telemetry publish), ApplySurfaceMotion postfix, SolveGLoadThrottleCap prefix/postfix (`MaxGLoad` bonus).
-- [ ] `Content/AccelerationAbsorbers.xml` + csproj `ModManifestArray="assets"` entry; example part patch.
-- [ ] `Mod.cs`: service registration via `IModServiceRegistry`; management ImGui window reading the telemetry store; keep/adjust welcome window.
-- [ ] Build `dotnet build -c Release`; fix compile issues.
-- [ ] In-game verification (ksa-launch): spawn patched part, confirm module creates, battery drains, console G-readout shows reduced G under thrust, no destruction at >limit G, engines not throttled below absorbed envelope, gas-giant-style surface G absorbed, per-part toggle works + propagates to symmetric parts, management window shows all absorbers/raw G, save/load round-trip preserves toggles.
+- [x] Create `AccelerationAbsorbers.Contracts` project + `IGForceDataProvider`/`VehicleGForceSnapshot`; wire `ExportedAssemblies`/project reference.
+- [x] `AccelerationAbsorber.cs`: Template/SaveData/state structs/module class (`CreateComponents`, `CreateStates`, `UpdateModules`, `RecreateManager`, `OnDrawUi`, save-data overrides, `DrawStateInfo`).
+- [x] `XmlRegistration.cs`: override registration for `PartTemplate.Components` (XmlArrayItems) + `PartInstance.Components` (XmlElements), both override instances.
+- [x] `Patches.cs`: Harmony patches — CreateModules postfix, UpdateModules postfix, Ingest prefix (absorption math + state writeback + throttle-bonus map + telemetry publish), ApplySingleSurfaceMotion postfix, SolveGLoadThrottleCap prefix/postfix (deliverable-G bonus).
+- [x] `Content/AccelerationAbsorbers.xml` + csproj `ModManifestArray="assets"` entry; example part patch.
+- [x] `Mod.cs`: service registration via `IModServiceRegistry`; management ImGui window reading the telemetry store; keep/adjust welcome window.
+- [x] Build `dotnet build -c Release`; fix compile issues.
+- [x] Power draw cap (`MaxPower`) + deliverable-capacity throttle bonus.
+- [ ] In-game verification (ksa-launch): spawn patched part, confirm module creates, battery drains, console G-readout shows reduced G under thrust, no destruction at >limit G, engines not throttled below absorbed envelope, gas-giant-style surface G absorbed, per-part toggle works + propagates to symmetric parts, management window shows all absorbers/raw G, save/load round-trip preserves toggles, heavy ships get proportionally less absorption under the power cap.
 - [ ] (Later, separate repo) KSAGEffects optional-dependency integration.

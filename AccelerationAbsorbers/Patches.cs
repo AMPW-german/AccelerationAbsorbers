@@ -167,6 +167,10 @@ internal static class AbsorberMeasurement
 		Span<AccelerationAbsorberState> states = updater.GetNewStates();
 		double3 rawAccel = measurements.AccelerationBody;
 		double rawG = rawAccel.Length() / StandardGravity;
+		if (!double.IsFinite(rawG))
+		{
+			return;
+		}
 		double sumEffective = 0.0;
 		for (int i = 0; i < count; i++)
 		{
@@ -208,7 +212,8 @@ internal static class AbsorberMeasurement
 				ConsumedWatts = state.ConsumedWatts.Value(),
 				CommandedG = state.CommandedAbsorptionG,
 				AbsorbedG = state.AbsorbedGThisStep,
-				MaxGLoad = module.MaxGLoad
+				MaxGLoad = module.MaxGLoad,
+				MaxPowerW = module.MaxPower.Value()
 			};
 		}
 		ref AccelerationAbsorberGlobalState globalState = ref updater.GlobalState;
@@ -217,7 +222,7 @@ internal static class AbsorberMeasurement
 		globalState.AbsorbedG = absorbed;
 		globalState.AbsorbedFraction = fraction;
 		globalState.LastIngestSimSeconds = now;
-		ThrottleBonusG.Set(vehicleState.FlightComputer, capacityG);
-		AbsorberTelemetry.Publish(vehicleState.ReadOnlyVehicle, now, globalState.RawG, globalState.EffectiveG, absorbed, fraction, capacityG, powerW, activeCount, rows);
+		ThrottleBonusG.Set(vehicleState.FlightComputer, globalState.TotalDeliverableG);
+		AbsorberTelemetry.Publish(vehicleState.ReadOnlyVehicle, now, globalState.RawG, globalState.EffectiveG, absorbed, fraction, capacityG, globalState.TotalDeliverableG, powerW, activeCount, rows);
 	}
 }

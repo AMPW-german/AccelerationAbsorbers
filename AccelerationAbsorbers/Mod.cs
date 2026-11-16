@@ -65,11 +65,12 @@ public class AccelerationAbsorbers
 			ImGui.Text($"{entry.VehicleId}");
 			ImGui.Text($"  Raw G:      {entry.RawG.Length():F2} g  ({entry.RawG.X:F2}, {entry.RawG.Y:F2}, {entry.RawG.Z:F2})");
 			ImGui.Text($"  Effective:  {entry.EffectiveG.Length():F2} g  ({entry.EffectiveG.X:F2}, {entry.EffectiveG.Y:F2}, {entry.EffectiveG.Z:F2})");
-			ImGui.Text($"  Absorbed:   {entry.AbsorbedG:F2} g ({entry.AbsorbedFraction * 100.0:F0}%)   Capacity: {entry.TotalCapacityG:F1} g   Power: {entry.TotalPowerW:F0} W   Active: {entry.ActiveModuleCount}");
+			ImGui.Text($"  Absorbed:   {entry.AbsorbedG:F2} g ({entry.AbsorbedFraction * 100.0:F0}%)   Capacity: {entry.TotalCapacityG:F1} g ({entry.TotalDeliverableG:F1} g deliverable)   Power: {entry.TotalPowerW:F0} W   Active: {entry.ActiveModuleCount}");
 			foreach (var module in entry.Modules)
 			{
 				string state = module.Active ? "active" : (module.Enabled ? "no power" : "disabled");
-				ImGui.Text($"    - {module.Label}: {module.ConsumedWatts:F0} W, {module.CommandedG:F1}/{module.MaxGLoad:F1} g, absorbed {module.AbsorbedG:F2} g [{state}]");
+				string draw = module.MaxPowerW > 0.0 ? $"{module.ConsumedWatts:F0}/{module.MaxPowerW:F0} W" : $"{module.ConsumedWatts:F0} W";
+				ImGui.Text($"    - {module.Label}: {draw}, {module.CommandedG:F1}/{module.MaxGLoad:F1} g, absorbed {module.AbsorbedG:F2} g [{state}]");
 			}
 		}
 		ImGui.End();
