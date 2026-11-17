@@ -209,11 +209,13 @@ internal static class AbsorberMeasurement
 				Label = module.Parent.DisplayName,
 				Enabled = module.Enabled,
 				Active = state.Active,
+				PowerLimited = state.PowerLimited,
 				ConsumedWatts = state.ConsumedWatts.Value(),
 				CommandedG = state.CommandedAbsorptionG,
 				AbsorbedG = state.AbsorbedGThisStep,
 				MaxGLoad = module.MaxGLoad,
-				MaxPowerW = module.MaxPower.Value()
+				MaxPowerW = module.MaxPower.Value(),
+				Module = module
 			};
 		}
 		ref AccelerationAbsorberGlobalState globalState = ref updater.GlobalState;

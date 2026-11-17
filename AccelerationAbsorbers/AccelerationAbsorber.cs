@@ -13,6 +13,8 @@ public struct AccelerationAbsorberState
 {
 	public bool Active;
 
+	public bool PowerLimited;
+
 	public Watts ConsumedWatts;
 
 	public double CommandedAbsorptionG;
@@ -251,6 +253,7 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 				{
 					theoreticalG = Math.Min(module.MaxGLoad, Math.Max(0.0, (capWatts - module.BasePower.Value()) / deliverableDenom));
 				}
+				current.State.PowerLimited = module.Enabled && capWatts > 0.0 && theoreticalG + 1e-6 < module.MaxGLoad;
 				deliverableG[index] = theoreticalG;
 				double moduleEffectiveG = theoreticalG;
 				if (theoreticalG > 0.0)
@@ -362,12 +365,14 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 					double powerScale = absorptionWattsRequired > 1e-9 ? Math.Clamp(absorptionBudget / absorptionWattsRequired, 0.0, 1.0) : 1.0;
 					current.State.TargetAbsorptionG = commandedG;
 					current.State.CommandedAbsorptionG = commandedG * powerScale;
+					current.State.PowerLimited |= powerScale < 1.0 - 1e-6;
 					current.State.Active = amountChanged > Joules.Zero;
 				}
 				else
 				{
 					current.State.ConsumedWatts = Watts.Zero;
 					current.State.Active = false;
+					current.State.PowerLimited |= module.Enabled;
 				}
 				globalState.TotalCapacityG += module.MaxGLoad;
 				globalState.TotalDeliverableG += moduleDeliverableG;
@@ -509,6 +514,14 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 					span2[num].Enabled = enabled;
 				}
 			}
+		}
+	}
+
+	public void SetEnabledFromManagementUi(bool enabled)
+	{
+		if (enabled != Enabled && RecordsHistoryFor(Parent.FullPart.Tree, s_enabledSetting, changed: true))
+		{
+			SetEnabled(enabled);
 		}
 	}
 

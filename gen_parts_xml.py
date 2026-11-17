@@ -33,8 +33,8 @@ DENSITY_KG_M3 = 5000.0
 #  collider X, collider Y, collider Z, collider center Z)
 # Radial mass uses a solid-cylinder approximation of each design envelope.
 RADIALS = [
-    ('Compact', 0.5, 0.40, 0.5, 0.56, 0.60, 0.44, 0.22),
-    ('Heavy', 0.9, 0.55, 1.0, 1.14, 0.74, 0.60, 0.30),
+    ('Compact', 0.5, 0.40, 0.5, 0.56, 0.60, 0.44, -0.22),
+    ('Heavy', 0.9, 0.55, 1.0, 1.14, 0.74, 0.60, -0.30),
 ]
 
 # color -> (display, MaxGLoad)
@@ -273,20 +273,23 @@ def build_assets():
                        f'AA_Mat_Glow_{color}')
     for radial_tag in ('Compact', 'Heavy'):
         for material in ('Hull', 'Dark'):
+            mesh = f'AA_Radial{radial_tag}_{material}'
             out += subpart(
                 f'AA_Subpart_Radial{radial_tag}_{material}',
-                f'AA_Radial{radial_tag}_{material}',
+                mesh,
                 f'AA_Mat_{material}',
             )
         for color in ('Green', 'Cyan', 'Amber', 'Violet'):
+            accent_mesh = f'AA_Radial{radial_tag}_Accent'
+            glow_mesh = f'AA_Radial{radial_tag}_Glow'
             out += subpart(
                 f'AA_Subpart_Radial{radial_tag}_Accent_{color}',
-                f'AA_Radial{radial_tag}_Accent',
+                accent_mesh,
                 f'AA_Mat_Accent_{color}',
             )
             out += subpart(
                 f'AA_Subpart_Radial{radial_tag}_Glow_{color}',
-                f'AA_Radial{radial_tag}_Glow',
+                glow_mesh,
                 f'AA_Mat_Glow_{color}',
             )
     out += subpart('AA_Subpart_RadialHeavy_CageHull',
@@ -414,7 +417,7 @@ def build_gamedata():
                 '\t\t<InertMasses Modify="Extend">',
                 '\t\t\t<SolidCylinderMass>',
                 f'\t\t\t\t<Mass Kg="{mass:.3f}" />',
-                f'\t\t\t\t<LocationAsmb Z="{fmt(depth / 2)}" />',
+                f'\t\t\t\t<LocationAsmb Z="{fmt(-depth / 2)}" />',
                 '\t\t\t\t<Paf2Asmb Y="1.5708" />',
                 f'\t\t\t\t<Length M="{fmt(depth)}" />',
                 f'\t\t\t\t<Radius M="{fmt(dia / 2)}" />',

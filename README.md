@@ -9,7 +9,7 @@ A [Kitten Space Agency](https://kittenspaceagency.com) (KSA) code mod built on
 ## Layout
 
 - `AccelerationAbsorbers/AccelerationAbsorbers.csproj` — the mod project (imports `tooling/msbuild/KsaMod.props` / `KsaMod.targets`)
-- `AccelerationAbsorbers/Mod.cs` — `[StarMapMod]` entry point: applies Harmony patches and draws the welcome window
+- `AccelerationAbsorbers/Mod.cs` — `[StarMapMod]` entry point: applies Harmony patches and draws the controlled-vehicle absorber dashboard
 - `AccelerationAbsorbers/Patches.cs` — example Harmony prefix patch
 - `tooling/` — KSAModTools submodule (MSBuild props/targets and CI actions)
 - `.github/workflows/build.yml` — CI: builds, packages and releases the mod

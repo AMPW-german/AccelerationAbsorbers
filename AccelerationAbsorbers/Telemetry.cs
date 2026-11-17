@@ -13,6 +13,8 @@ internal struct AbsorberModuleRow
 
 	public bool Active;
 
+	public bool PowerLimited;
+
 	public double ConsumedWatts;
 
 	public double CommandedG;
@@ -22,6 +24,8 @@ internal struct AbsorberModuleRow
 	public double MaxGLoad;
 
 	public double MaxPowerW;
+
+	public AccelerationAbsorber Module;
 }
 
 internal sealed class VehicleAbsorberTelemetry
@@ -75,7 +79,13 @@ internal static class AbsorberTelemetry
 		s_entries[vehicle] = new VehicleAbsorberTelemetry(vehicle.Id, simTime.Seconds(), rawG, effectiveG, absorbedG, absorbedFraction, totalCapacityG, totalDeliverableG, totalPowerW, activeModuleCount, modules);
 	}
 
-	public static List<VehicleAbsorberTelemetry> GetEntries()
+	public static bool TryGetEntry(Vehicle vehicle, out VehicleAbsorberTelemetry? entry)
+	{
+		PruneStaleEntries();
+		return s_entries.TryGetValue(vehicle, out entry);
+	}
+
+	private static void PruneStaleEntries()
 	{
 		double maxTime = double.MinValue;
 		foreach (VehicleAbsorberTelemetry entry in s_entries.Values)
@@ -85,16 +95,12 @@ internal static class AbsorberTelemetry
 				maxTime = entry.SimTimeSeconds;
 			}
 		}
-		List<VehicleAbsorberTelemetry> result = new List<VehicleAbsorberTelemetry>(s_entries.Count);
 		foreach (KeyValuePair<Vehicle, VehicleAbsorberTelemetry> pair in s_entries)
 		{
 			if (maxTime - pair.Value.SimTimeSeconds > StaleSeconds)
 			{
 				s_entries.TryRemove(pair.Key, out _);
-				continue;
 			}
-			result.Add(pair.Value);
 		}
-		return result;
 	}
 }

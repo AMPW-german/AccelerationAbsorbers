@@ -417,7 +417,7 @@
 		<InertMasses Modify="Extend">
 			<SolidCylinderMass>
 				<Mass Kg="392.699" />
-				<LocationAsmb Z="0.2" />
+				<LocationAsmb Z="-0.2" />
 				<Paf2Asmb Y="1.5708" />
 				<Length M="0.4" />
 				<Radius M="0.25" />
@@ -445,7 +445,7 @@
 		<InertMasses Modify="Extend">
 			<SolidCylinderMass>
 				<Mass Kg="392.699" />
-				<LocationAsmb Z="0.2" />
+				<LocationAsmb Z="-0.2" />
 				<Paf2Asmb Y="1.5708" />
 				<Length M="0.4" />
 				<Radius M="0.25" />
@@ -473,7 +473,7 @@
 		<InertMasses Modify="Extend">
 			<SolidCylinderMass>
 				<Mass Kg="392.699" />
-				<LocationAsmb Z="0.2" />
+				<LocationAsmb Z="-0.2" />
 				<Paf2Asmb Y="1.5708" />
 				<Length M="0.4" />
 				<Radius M="0.25" />
@@ -501,7 +501,7 @@
 		<InertMasses Modify="Extend">
 			<SolidCylinderMass>
 				<Mass Kg="392.699" />
-				<LocationAsmb Z="0.2" />
+				<LocationAsmb Z="-0.2" />
 				<Paf2Asmb Y="1.5708" />
 				<Length M="0.4" />
 				<Radius M="0.25" />
@@ -529,7 +529,7 @@
 		<InertMasses Modify="Extend">
 			<SolidCylinderMass>
 				<Mass Kg="1749.474" />
-				<LocationAsmb Z="0.275" />
+				<LocationAsmb Z="-0.275" />
 				<Paf2Asmb Y="1.5708" />
 				<Length M="0.55" />
 				<Radius M="0.45" />
@@ -557,7 +557,7 @@
 		<InertMasses Modify="Extend">
 			<SolidCylinderMass>
 				<Mass Kg="1749.474" />
-				<LocationAsmb Z="0.275" />
+				<LocationAsmb Z="-0.275" />
 				<Paf2Asmb Y="1.5708" />
 				<Length M="0.55" />
 				<Radius M="0.45" />
@@ -585,7 +585,7 @@
 		<InertMasses Modify="Extend">
 			<SolidCylinderMass>
 				<Mass Kg="1749.474" />
-				<LocationAsmb Z="0.275" />
+				<LocationAsmb Z="-0.275" />
 				<Paf2Asmb Y="1.5708" />
 				<Length M="0.55" />
 				<Radius M="0.45" />
@@ -613,7 +613,7 @@
 		<InertMasses Modify="Extend">
 			<SolidCylinderMass>
 				<Mass Kg="1749.474" />
-				<LocationAsmb Z="0.275" />
+				<LocationAsmb Z="-0.275" />
 				<Paf2Asmb Y="1.5708" />
 				<Length M="0.55" />
 				<Radius M="0.45" />

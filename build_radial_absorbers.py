@@ -105,7 +105,10 @@ def cylinder(design, material, name, location, radius, depth, bevel=0.0,
         rotation=rotation)
     obj = bpy.context.object
     obj.name = name
-    return finish(obj, design, material, bevel, mesh_group)
+    obj = finish(obj, design, material, bevel, mesh_group)
+    for polygon in obj.data.polygons:
+        polygon.use_smooth = len(polygon.vertices) <= 4
+    return obj
 
 
 def torus(design, material, name, location, radius, thickness):
@@ -115,7 +118,10 @@ def torus(design, material, name, location, radius, thickness):
         location=location)
     obj = bpy.context.object
     obj.name = name
-    return finish(obj, design, material)
+    obj = finish(obj, design, material)
+    for polygon in obj.data.polygons:
+        polygon.use_smooth = True
+    return obj
 
 
 def bolt(design, name, x, y, z, radius=0.018):
@@ -249,6 +255,12 @@ atlas_objects = [
     join_group('Heavy', 'CageHull'),
     join_group('Heavy', 'CageDark'),
 ]
+# Radial parts extend outward from the mounting plane along local -Z.
+for obj in atlas_objects:
+    for vertex in obj.data.vertices:
+        vertex.co.y = -vertex.co.y
+        vertex.co.z = -vertex.co.z
+    obj.data.update()
 
 # Export only this new scene; the source inline scene is preserved.
 bpy.ops.export_scene.gltf(
@@ -258,6 +270,7 @@ bpy.ops.export_scene.gltf(
     export_animations=False,
     export_cameras=False,
     export_lights=False,
+    export_yup=False,
     use_active_scene=True,
 )
 
@@ -280,6 +293,7 @@ for obj in atlas_objects:
         display = obj.copy()
         display.data = obj.data
         display.location.x = offset
+        display.rotation_euler.x = math.pi
         preview_collection.objects.link(display)
 
 inline_blend = os.path.join(ROOT, 'AA_Inline2M_Violet.blend')
