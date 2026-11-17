@@ -1,0 +1,1437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Assets>
+	<!-- Acceleration absorber parts - visual assets.
+	     Four inline sizes and two radial designs, each with four
+	     standalone rating/color parts (KSA variants cannot carry
+	     different gameplay stats). Heavy Radial ratings offer a
+	     cage-free cosmetic variant; inline parts scale shared
+	     meshes, radial parts use dedicated meshes. -->
+
+	<MeshAtlas Id="AA_MeshAtlas" Path="Content/Meshes/AA_MeshAtlas.glb" />
+	<MeshAtlas Id="AA_RadialMeshAtlas" Path="Content/Meshes/AA_RadialMeshAtlas.glb" />
+
+	<Texture Id="AA_Tex_DiffHull" Path="Content/Textures/aa_diff_hull.png" Category="Vessel" />
+	<Texture Id="AA_Tex_DiffDark" Path="Content/Textures/aa_diff_dark.png" Category="Vessel" />
+	<Texture Id="AA_Tex_DiffAccent_Green" Path="Content/Textures/aa_diff_accent_green.png" Category="Vessel" />
+	<Texture Id="AA_Tex_DiffAccent_Cyan" Path="Content/Textures/aa_diff_accent_cyan.png" Category="Vessel" />
+	<Texture Id="AA_Tex_DiffAccent_Amber" Path="Content/Textures/aa_diff_accent_amber.png" Category="Vessel" />
+	<Texture Id="AA_Tex_DiffAccent_Violet" Path="Content/Textures/aa_diff_accent_violet.png" Category="Vessel" />
+	<Texture Id="AA_Tex_PbrHull" Path="Content/Textures/aa_pbr_hull.png" Category="Vessel" />
+	<Texture Id="AA_Tex_PbrDark" Path="Content/Textures/aa_pbr_dark.png" Category="Vessel" />
+	<Texture Id="AA_Tex_PbrAccent" Path="Content/Textures/aa_pbr_accent.png" Category="Vessel" />
+	<Texture Id="AA_Tex_Normal" Path="Content/Textures/aa_normal.png" Category="Vessel" />
+	<Texture Id="AA_Tex_EmissiveGlow" Path="Content/Textures/aa_emissive_glow.png" Category="Vessel" />
+
+	<PbrMaterial Id="AA_Mat_Hull">
+		<Diffuse Ref="AA_Tex_DiffHull" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrHull" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Dark">
+		<Diffuse Ref="AA_Tex_DiffDark" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrDark" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Accent_Green">
+		<Diffuse Ref="AA_Tex_DiffAccent_Green" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrAccent" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Glow_Green">
+		<Diffuse Ref="AA_Tex_DiffAccent_Green" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrAccent" />
+		<Emissive Ref="AA_Tex_EmissiveGlow" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Accent_Cyan">
+		<Diffuse Ref="AA_Tex_DiffAccent_Cyan" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrAccent" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Glow_Cyan">
+		<Diffuse Ref="AA_Tex_DiffAccent_Cyan" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrAccent" />
+		<Emissive Ref="AA_Tex_EmissiveGlow" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Accent_Amber">
+		<Diffuse Ref="AA_Tex_DiffAccent_Amber" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrAccent" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Glow_Amber">
+		<Diffuse Ref="AA_Tex_DiffAccent_Amber" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrAccent" />
+		<Emissive Ref="AA_Tex_EmissiveGlow" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Accent_Violet">
+		<Diffuse Ref="AA_Tex_DiffAccent_Violet" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrAccent" />
+	</PbrMaterial>
+	<PbrMaterial Id="AA_Mat_Glow_Violet">
+		<Diffuse Ref="AA_Tex_DiffAccent_Violet" />
+		<Normal Ref="AA_Tex_Normal" />
+		<AoRoughMetal Ref="AA_Tex_PbrAccent" />
+		<Emissive Ref="AA_Tex_EmissiveGlow" />
+	</PbrMaterial>
+
+	<SubPart Id="AA_Subpart_Hull">
+		<Components>
+			<PartModel Key="AA_Subpart_Hull_Model">
+				<Mesh Ref="AA_Hull" />
+				<Material Ref="AA_Mat_Hull" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Hull" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Dark">
+		<Components>
+			<PartModel Key="AA_Subpart_Dark_Model">
+				<Mesh Ref="AA_Dark" />
+				<Material Ref="AA_Mat_Dark" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Dark" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Accent_Green">
+		<Components>
+			<PartModel Key="AA_Subpart_Accent_Green_Model">
+				<Mesh Ref="AA_Accent" />
+				<Material Ref="AA_Mat_Accent_Green" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Glow_Green">
+		<Components>
+			<PartModel Key="AA_Subpart_Glow_Green_Model">
+				<Mesh Ref="AA_Glow" />
+				<Material Ref="AA_Mat_Glow_Green" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Accent_Cyan">
+		<Components>
+			<PartModel Key="AA_Subpart_Accent_Cyan_Model">
+				<Mesh Ref="AA_Accent" />
+				<Material Ref="AA_Mat_Accent_Cyan" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Glow_Cyan">
+		<Components>
+			<PartModel Key="AA_Subpart_Glow_Cyan_Model">
+				<Mesh Ref="AA_Glow" />
+				<Material Ref="AA_Mat_Glow_Cyan" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Accent_Amber">
+		<Components>
+			<PartModel Key="AA_Subpart_Accent_Amber_Model">
+				<Mesh Ref="AA_Accent" />
+				<Material Ref="AA_Mat_Accent_Amber" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Glow_Amber">
+		<Components>
+			<PartModel Key="AA_Subpart_Glow_Amber_Model">
+				<Mesh Ref="AA_Glow" />
+				<Material Ref="AA_Mat_Glow_Amber" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Accent_Violet">
+		<Components>
+			<PartModel Key="AA_Subpart_Accent_Violet_Model">
+				<Mesh Ref="AA_Accent" />
+				<Material Ref="AA_Mat_Accent_Violet" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_Glow_Violet">
+		<Components>
+			<PartModel Key="AA_Subpart_Glow_Violet_Model">
+				<Mesh Ref="AA_Glow" />
+				<Material Ref="AA_Mat_Glow_Violet" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Hull">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Hull_Model">
+				<Mesh Ref="AA_RadialCompact_Hull" />
+				<Material Ref="AA_Mat_Hull" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Hull" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Dark">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Dark_Model">
+				<Mesh Ref="AA_RadialCompact_Dark" />
+				<Material Ref="AA_Mat_Dark" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Dark" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Accent_Green">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Accent_Green_Model">
+				<Mesh Ref="AA_RadialCompact_Accent" />
+				<Material Ref="AA_Mat_Accent_Green" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Glow_Green">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Glow_Green_Model">
+				<Mesh Ref="AA_RadialCompact_Glow" />
+				<Material Ref="AA_Mat_Glow_Green" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Accent_Cyan">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Accent_Cyan_Model">
+				<Mesh Ref="AA_RadialCompact_Accent" />
+				<Material Ref="AA_Mat_Accent_Cyan" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Glow_Cyan">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Glow_Cyan_Model">
+				<Mesh Ref="AA_RadialCompact_Glow" />
+				<Material Ref="AA_Mat_Glow_Cyan" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Accent_Amber">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Accent_Amber_Model">
+				<Mesh Ref="AA_RadialCompact_Accent" />
+				<Material Ref="AA_Mat_Accent_Amber" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Glow_Amber">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Glow_Amber_Model">
+				<Mesh Ref="AA_RadialCompact_Glow" />
+				<Material Ref="AA_Mat_Glow_Amber" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Accent_Violet">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Accent_Violet_Model">
+				<Mesh Ref="AA_RadialCompact_Accent" />
+				<Material Ref="AA_Mat_Accent_Violet" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialCompact_Glow_Violet">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialCompact_Glow_Violet_Model">
+				<Mesh Ref="AA_RadialCompact_Glow" />
+				<Material Ref="AA_Mat_Glow_Violet" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialCompact_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Hull">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Hull_Model">
+				<Mesh Ref="AA_RadialHeavy_Hull" />
+				<Material Ref="AA_Mat_Hull" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Hull" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Dark">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Dark_Model">
+				<Mesh Ref="AA_RadialHeavy_Dark" />
+				<Material Ref="AA_Mat_Dark" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Dark" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Accent_Green">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Accent_Green_Model">
+				<Mesh Ref="AA_RadialHeavy_Accent" />
+				<Material Ref="AA_Mat_Accent_Green" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Glow_Green">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Glow_Green_Model">
+				<Mesh Ref="AA_RadialHeavy_Glow" />
+				<Material Ref="AA_Mat_Glow_Green" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Accent_Cyan">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Accent_Cyan_Model">
+				<Mesh Ref="AA_RadialHeavy_Accent" />
+				<Material Ref="AA_Mat_Accent_Cyan" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Glow_Cyan">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Glow_Cyan_Model">
+				<Mesh Ref="AA_RadialHeavy_Glow" />
+				<Material Ref="AA_Mat_Glow_Cyan" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Accent_Amber">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Accent_Amber_Model">
+				<Mesh Ref="AA_RadialHeavy_Accent" />
+				<Material Ref="AA_Mat_Accent_Amber" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Glow_Amber">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Glow_Amber_Model">
+				<Mesh Ref="AA_RadialHeavy_Glow" />
+				<Material Ref="AA_Mat_Glow_Amber" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Accent_Violet">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Accent_Violet_Model">
+				<Mesh Ref="AA_RadialHeavy_Accent" />
+				<Material Ref="AA_Mat_Accent_Violet" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Accent" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_Glow_Violet">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_Glow_Violet_Model">
+				<Mesh Ref="AA_RadialHeavy_Glow" />
+				<Material Ref="AA_Mat_Glow_Violet" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_Glow" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_CageHull">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_CageHull_Model">
+				<Mesh Ref="AA_RadialHeavy_CageHull" />
+				<Material Ref="AA_Mat_Hull" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_CageHull" />
+			</MeshView>
+		</Components>
+	</SubPart>
+	<SubPart Id="AA_Subpart_RadialHeavy_CageDark">
+		<Components>
+			<PartModel Key="AA_Subpart_RadialHeavy_CageDark_Model">
+				<Mesh Ref="AA_RadialHeavy_CageDark" />
+				<Material Ref="AA_Mat_Dark" />
+			</PartModel>
+			<MeshView>
+				<Mesh Ref="AA_RadialHeavy_CageDark" />
+			</MeshView>
+		</Components>
+	</SubPart>
+
+	<Part Id="AA_Prefab_InlineAbsorber1M_Green">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Green">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Green">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.25" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.25" />
+					<Rotation Z="3.1416" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="0.5" />
+						<Radius M="0.5" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber1M_Cyan">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Cyan">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Cyan">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.25" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.25" />
+					<Rotation Z="3.1416" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="0.5" />
+						<Radius M="0.5" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber1M_Amber">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Amber">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Amber">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.25" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.25" />
+					<Rotation Z="3.1416" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="0.5" />
+						<Radius M="0.5" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber1M_Violet">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Violet">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Violet">
+				<Transform><Scale X="0.5" Y="0.5" Z="0.5" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.25" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.25" />
+					<Rotation Z="3.1416" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="0.5" />
+						<Radius M="0.5" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber2M_Green">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Green">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Green">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.5" />
+					<Scale X="2" Y="2" Z="2" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.5" />
+					<Rotation Z="3.1416" />
+					<Scale X="2" Y="2" Z="2" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="1" />
+						<Radius M="1" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber2M_Cyan">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Cyan">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Cyan">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.5" />
+					<Scale X="2" Y="2" Z="2" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.5" />
+					<Rotation Z="3.1416" />
+					<Scale X="2" Y="2" Z="2" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="1" />
+						<Radius M="1" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber2M_Amber">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Amber">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Amber">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.5" />
+					<Scale X="2" Y="2" Z="2" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.5" />
+					<Rotation Z="3.1416" />
+					<Scale X="2" Y="2" Z="2" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="1" />
+						<Radius M="1" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber2M_Violet">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Violet">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Violet">
+				<Transform><Scale X="1" Y="1" Z="1" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.5" />
+					<Scale X="2" Y="2" Z="2" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.5" />
+					<Rotation Z="3.1416" />
+					<Scale X="2" Y="2" Z="2" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="1" />
+						<Radius M="1" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber3M_Green">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Green">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Green">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.75" />
+					<Scale X="3" Y="3" Z="3" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.75" />
+					<Rotation Z="3.1416" />
+					<Scale X="3" Y="3" Z="3" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="1.5" />
+						<Radius M="1.5" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber3M_Cyan">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Cyan">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Cyan">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.75" />
+					<Scale X="3" Y="3" Z="3" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.75" />
+					<Rotation Z="3.1416" />
+					<Scale X="3" Y="3" Z="3" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="1.5" />
+						<Radius M="1.5" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber3M_Amber">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Amber">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Amber">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.75" />
+					<Scale X="3" Y="3" Z="3" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.75" />
+					<Rotation Z="3.1416" />
+					<Scale X="3" Y="3" Z="3" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="1.5" />
+						<Radius M="1.5" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber3M_Violet">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Violet">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Violet">
+				<Transform><Scale X="1.5" Y="1.5" Z="1.5" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="0.75" />
+					<Scale X="3" Y="3" Z="3" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-0.75" />
+					<Rotation Z="3.1416" />
+					<Scale X="3" Y="3" Z="3" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="1.5" />
+						<Radius M="1.5" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber4M_Green">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Green">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Green">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="1" />
+					<Scale X="4" Y="4" Z="4" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-1" />
+					<Rotation Z="3.1416" />
+					<Scale X="4" Y="4" Z="4" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="2" />
+						<Radius M="2" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber4M_Cyan">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Cyan">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Cyan">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="1" />
+					<Scale X="4" Y="4" Z="4" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-1" />
+					<Rotation Z="3.1416" />
+					<Scale X="4" Y="4" Z="4" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="2" />
+						<Radius M="2" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber4M_Amber">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Amber">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Amber">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="1" />
+					<Scale X="4" Y="4" Z="4" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-1" />
+					<Rotation Z="3.1416" />
+					<Scale X="4" Y="4" Z="4" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="2" />
+						<Radius M="2" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_InlineAbsorber4M_Violet">
+		<SubParts>
+			<SubPart Key="AA_Hull_1" Ref="AA_Subpart_Hull">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Dark_1" Ref="AA_Subpart_Dark">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Accent_1" Ref="AA_Subpart_Accent_Violet">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+			<SubPart Key="AA_Glow_1" Ref="AA_Subpart_Glow_Violet">
+				<Transform><Scale X="2" Y="2" Z="2" /></Transform>
+			</SubPart>
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorFore">
+				<Transform>
+					<Position X="1" />
+					<Scale X="4" Y="4" Z="4" />
+				</Transform>
+			</Connector>
+			<Connector Key="_connectorAft">
+				<Transform>
+					<Position X="-1" />
+					<Rotation Z="3.1416" />
+					<Scale X="4" Y="4" Z="4" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="Collider1">
+				<Colliders>
+					<Cylinder Key="CylinderCollider1">
+						<LocationAsmb X="0" Y="0" Z="0" />
+						<Collider2Asmb X="0" Y="0" Z="-1.5708" />
+						<LengthY M="2" />
+						<Radius M="2" />
+					</Cylinder>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberCompact_Green">
+		<SubParts>
+			<SubPart Key="AA_RadialCompact_Hull_1" Ref="AA_Subpart_RadialCompact_Hull" />
+			<SubPart Key="AA_RadialCompact_Dark_1" Ref="AA_Subpart_RadialCompact_Dark" />
+			<SubPart Key="AA_RadialCompact_Accent_1" Ref="AA_Subpart_RadialCompact_Accent_Green" />
+			<SubPart Key="AA_RadialCompact_Glow_1" Ref="AA_Subpart_RadialCompact_Glow_Green" />
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorRadial">
+				<Transform>
+					<Rotation Y="-1.5708" />
+					<Scale X="0.5" Y="0.5" Z="0.5" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="RadialCollider">
+				<Colliders>
+					<Box Key="RadialBoxCollider">
+						<LocationAsmb X="0" Y="0" Z="0.22" />
+						<Collider2Asmb X="0" Y="0" Z="0" />
+						<LengthX M="0.56" />
+						<LengthY M="0.6" />
+						<LengthZ M="0.44" />
+					</Box>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberCompact_Cyan">
+		<SubParts>
+			<SubPart Key="AA_RadialCompact_Hull_1" Ref="AA_Subpart_RadialCompact_Hull" />
+			<SubPart Key="AA_RadialCompact_Dark_1" Ref="AA_Subpart_RadialCompact_Dark" />
+			<SubPart Key="AA_RadialCompact_Accent_1" Ref="AA_Subpart_RadialCompact_Accent_Cyan" />
+			<SubPart Key="AA_RadialCompact_Glow_1" Ref="AA_Subpart_RadialCompact_Glow_Cyan" />
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorRadial">
+				<Transform>
+					<Rotation Y="-1.5708" />
+					<Scale X="0.5" Y="0.5" Z="0.5" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="RadialCollider">
+				<Colliders>
+					<Box Key="RadialBoxCollider">
+						<LocationAsmb X="0" Y="0" Z="0.22" />
+						<Collider2Asmb X="0" Y="0" Z="0" />
+						<LengthX M="0.56" />
+						<LengthY M="0.6" />
+						<LengthZ M="0.44" />
+					</Box>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberCompact_Amber">
+		<SubParts>
+			<SubPart Key="AA_RadialCompact_Hull_1" Ref="AA_Subpart_RadialCompact_Hull" />
+			<SubPart Key="AA_RadialCompact_Dark_1" Ref="AA_Subpart_RadialCompact_Dark" />
+			<SubPart Key="AA_RadialCompact_Accent_1" Ref="AA_Subpart_RadialCompact_Accent_Amber" />
+			<SubPart Key="AA_RadialCompact_Glow_1" Ref="AA_Subpart_RadialCompact_Glow_Amber" />
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorRadial">
+				<Transform>
+					<Rotation Y="-1.5708" />
+					<Scale X="0.5" Y="0.5" Z="0.5" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="RadialCollider">
+				<Colliders>
+					<Box Key="RadialBoxCollider">
+						<LocationAsmb X="0" Y="0" Z="0.22" />
+						<Collider2Asmb X="0" Y="0" Z="0" />
+						<LengthX M="0.56" />
+						<LengthY M="0.6" />
+						<LengthZ M="0.44" />
+					</Box>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberCompact_Violet">
+		<SubParts>
+			<SubPart Key="AA_RadialCompact_Hull_1" Ref="AA_Subpart_RadialCompact_Hull" />
+			<SubPart Key="AA_RadialCompact_Dark_1" Ref="AA_Subpart_RadialCompact_Dark" />
+			<SubPart Key="AA_RadialCompact_Accent_1" Ref="AA_Subpart_RadialCompact_Accent_Violet" />
+			<SubPart Key="AA_RadialCompact_Glow_1" Ref="AA_Subpart_RadialCompact_Glow_Violet" />
+		</SubParts>
+		<Connectors>
+			<Connector Key="_connectorRadial">
+				<Transform>
+					<Rotation Y="-1.5708" />
+					<Scale X="0.5" Y="0.5" Z="0.5" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="RadialCollider">
+				<Colliders>
+					<Box Key="RadialBoxCollider">
+						<LocationAsmb X="0" Y="0" Z="0.22" />
+						<Collider2Asmb X="0" Y="0" Z="0" />
+						<LengthX M="0.56" />
+						<LengthY M="0.6" />
+						<LengthZ M="0.44" />
+					</Box>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Green">
+		<SubParts>
+			<SubPart Key="AA_RadialHeavy_Hull_1" Ref="AA_Subpart_RadialHeavy_Hull" />
+			<SubPart Key="AA_RadialHeavy_Dark_1" Ref="AA_Subpart_RadialHeavy_Dark" />
+			<SubPart Key="AA_RadialHeavy_Accent_1" Ref="AA_Subpart_RadialHeavy_Accent_Green" />
+			<SubPart Key="AA_RadialHeavy_Glow_1" Ref="AA_Subpart_RadialHeavy_Glow_Green" />
+			<SubPart Key="AA_RadialHeavy_CageHull_1" Ref="AA_Subpart_RadialHeavy_CageHull" />
+			<SubPart Key="AA_RadialHeavy_CageDark_1" Ref="AA_Subpart_RadialHeavy_CageDark" />
+		</SubParts>
+		<Variants>
+			<Part Ref="AA_Prefab_RadialAbsorberHeavy_Green" />
+			<Part Ref="AA_Prefab_RadialAbsorberHeavy_Green_NoCage" />
+		</Variants>
+		<Connectors>
+			<Connector Key="_connectorRadial">
+				<Transform>
+					<Rotation Y="-1.5708" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="RadialCollider">
+				<Colliders>
+					<Box Key="RadialBoxCollider">
+						<LocationAsmb X="0" Y="0" Z="0.3" />
+						<Collider2Asmb X="0" Y="0" Z="0" />
+						<LengthX M="1.14" />
+						<LengthY M="0.74" />
+						<LengthZ M="0.6" />
+					</Box>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Green_NoCage" Parent="AA_Prefab_RadialAbsorberHeavy_Green">
+		<SubParts>
+			<SubPart Key="AA_RadialHeavy_Hull_1" Ref="AA_Subpart_RadialHeavy_Hull" />
+			<SubPart Key="AA_RadialHeavy_Dark_1" Ref="AA_Subpart_RadialHeavy_Dark" />
+			<SubPart Key="AA_RadialHeavy_Accent_1" Ref="AA_Subpart_RadialHeavy_Accent_Green" />
+			<SubPart Key="AA_RadialHeavy_Glow_1" Ref="AA_Subpart_RadialHeavy_Glow_Green" />
+		</SubParts>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Cyan">
+		<SubParts>
+			<SubPart Key="AA_RadialHeavy_Hull_1" Ref="AA_Subpart_RadialHeavy_Hull" />
+			<SubPart Key="AA_RadialHeavy_Dark_1" Ref="AA_Subpart_RadialHeavy_Dark" />
+			<SubPart Key="AA_RadialHeavy_Accent_1" Ref="AA_Subpart_RadialHeavy_Accent_Cyan" />
+			<SubPart Key="AA_RadialHeavy_Glow_1" Ref="AA_Subpart_RadialHeavy_Glow_Cyan" />
+			<SubPart Key="AA_RadialHeavy_CageHull_1" Ref="AA_Subpart_RadialHeavy_CageHull" />
+			<SubPart Key="AA_RadialHeavy_CageDark_1" Ref="AA_Subpart_RadialHeavy_CageDark" />
+		</SubParts>
+		<Variants>
+			<Part Ref="AA_Prefab_RadialAbsorberHeavy_Cyan" />
+			<Part Ref="AA_Prefab_RadialAbsorberHeavy_Cyan_NoCage" />
+		</Variants>
+		<Connectors>
+			<Connector Key="_connectorRadial">
+				<Transform>
+					<Rotation Y="-1.5708" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="RadialCollider">
+				<Colliders>
+					<Box Key="RadialBoxCollider">
+						<LocationAsmb X="0" Y="0" Z="0.3" />
+						<Collider2Asmb X="0" Y="0" Z="0" />
+						<LengthX M="1.14" />
+						<LengthY M="0.74" />
+						<LengthZ M="0.6" />
+					</Box>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Cyan_NoCage" Parent="AA_Prefab_RadialAbsorberHeavy_Cyan">
+		<SubParts>
+			<SubPart Key="AA_RadialHeavy_Hull_1" Ref="AA_Subpart_RadialHeavy_Hull" />
+			<SubPart Key="AA_RadialHeavy_Dark_1" Ref="AA_Subpart_RadialHeavy_Dark" />
+			<SubPart Key="AA_RadialHeavy_Accent_1" Ref="AA_Subpart_RadialHeavy_Accent_Cyan" />
+			<SubPart Key="AA_RadialHeavy_Glow_1" Ref="AA_Subpart_RadialHeavy_Glow_Cyan" />
+		</SubParts>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Amber">
+		<SubParts>
+			<SubPart Key="AA_RadialHeavy_Hull_1" Ref="AA_Subpart_RadialHeavy_Hull" />
+			<SubPart Key="AA_RadialHeavy_Dark_1" Ref="AA_Subpart_RadialHeavy_Dark" />
+			<SubPart Key="AA_RadialHeavy_Accent_1" Ref="AA_Subpart_RadialHeavy_Accent_Amber" />
+			<SubPart Key="AA_RadialHeavy_Glow_1" Ref="AA_Subpart_RadialHeavy_Glow_Amber" />
+			<SubPart Key="AA_RadialHeavy_CageHull_1" Ref="AA_Subpart_RadialHeavy_CageHull" />
+			<SubPart Key="AA_RadialHeavy_CageDark_1" Ref="AA_Subpart_RadialHeavy_CageDark" />
+		</SubParts>
+		<Variants>
+			<Part Ref="AA_Prefab_RadialAbsorberHeavy_Amber" />
+			<Part Ref="AA_Prefab_RadialAbsorberHeavy_Amber_NoCage" />
+		</Variants>
+		<Connectors>
+			<Connector Key="_connectorRadial">
+				<Transform>
+					<Rotation Y="-1.5708" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="RadialCollider">
+				<Colliders>
+					<Box Key="RadialBoxCollider">
+						<LocationAsmb X="0" Y="0" Z="0.3" />
+						<Collider2Asmb X="0" Y="0" Z="0" />
+						<LengthX M="1.14" />
+						<LengthY M="0.74" />
+						<LengthZ M="0.6" />
+					</Box>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Amber_NoCage" Parent="AA_Prefab_RadialAbsorberHeavy_Amber">
+		<SubParts>
+			<SubPart Key="AA_RadialHeavy_Hull_1" Ref="AA_Subpart_RadialHeavy_Hull" />
+			<SubPart Key="AA_RadialHeavy_Dark_1" Ref="AA_Subpart_RadialHeavy_Dark" />
+			<SubPart Key="AA_RadialHeavy_Accent_1" Ref="AA_Subpart_RadialHeavy_Accent_Amber" />
+			<SubPart Key="AA_RadialHeavy_Glow_1" Ref="AA_Subpart_RadialHeavy_Glow_Amber" />
+		</SubParts>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Violet">
+		<SubParts>
+			<SubPart Key="AA_RadialHeavy_Hull_1" Ref="AA_Subpart_RadialHeavy_Hull" />
+			<SubPart Key="AA_RadialHeavy_Dark_1" Ref="AA_Subpart_RadialHeavy_Dark" />
+			<SubPart Key="AA_RadialHeavy_Accent_1" Ref="AA_Subpart_RadialHeavy_Accent_Violet" />
+			<SubPart Key="AA_RadialHeavy_Glow_1" Ref="AA_Subpart_RadialHeavy_Glow_Violet" />
+			<SubPart Key="AA_RadialHeavy_CageHull_1" Ref="AA_Subpart_RadialHeavy_CageHull" />
+			<SubPart Key="AA_RadialHeavy_CageDark_1" Ref="AA_Subpart_RadialHeavy_CageDark" />
+		</SubParts>
+		<Variants>
+			<Part Ref="AA_Prefab_RadialAbsorberHeavy_Violet" />
+			<Part Ref="AA_Prefab_RadialAbsorberHeavy_Violet_NoCage" />
+		</Variants>
+		<Connectors>
+			<Connector Key="_connectorRadial">
+				<Transform>
+					<Rotation Y="-1.5708" />
+					<Scale X="1" Y="1" Z="1" />
+				</Transform>
+			</Connector>
+		</Connectors>
+		<Components>
+			<Collider Key="RadialCollider">
+				<Colliders>
+					<Box Key="RadialBoxCollider">
+						<LocationAsmb X="0" Y="0" Z="0.3" />
+						<Collider2Asmb X="0" Y="0" Z="0" />
+						<LengthX M="1.14" />
+						<LengthY M="0.74" />
+						<LengthZ M="0.6" />
+					</Box>
+				</Colliders>
+			</Collider>
+		</Components>
+	</Part>
+
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Violet_NoCage" Parent="AA_Prefab_RadialAbsorberHeavy_Violet">
+		<SubParts>
+			<SubPart Key="AA_RadialHeavy_Hull_1" Ref="AA_Subpart_RadialHeavy_Hull" />
+			<SubPart Key="AA_RadialHeavy_Dark_1" Ref="AA_Subpart_RadialHeavy_Dark" />
+			<SubPart Key="AA_RadialHeavy_Accent_1" Ref="AA_Subpart_RadialHeavy_Accent_Violet" />
+			<SubPart Key="AA_RadialHeavy_Glow_1" Ref="AA_Subpart_RadialHeavy_Glow_Violet" />
+		</SubParts>
+	</Part>
+
+</Assets>

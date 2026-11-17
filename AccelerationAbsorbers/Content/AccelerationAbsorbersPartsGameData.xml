@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Assets>
+	<!-- Acceleration absorber parts - gameplay data.
+	     Stats from PARTS_AND_BALANCE.md variant table;
+	     PowerPerTonne=1, delay 10-30 ms on all variants. -->
+	<EditorTagDef Id="Absorbers" />
+	<Part Id="AA_Prefab_InlineAbsorber1M_Green" Modify="Patch" DisplayName="1M Inline Absorber - Green 4G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="1" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="1963.495" />
+				<Length M="0.5" />
+				<Radius M="0.5" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="4" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="125" />
+				<MaxPower W="5000" />
+				<PowerPerGLoad W="1.3" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber1M_Cyan" Modify="Patch" DisplayName="1M Inline Absorber - Cyan 8G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="1" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="1963.495" />
+				<Length M="0.5" />
+				<Radius M="0.5" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="8" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="187.5" />
+				<MaxPower W="6650" />
+				<PowerPerGLoad W="1.7" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber1M_Amber" Modify="Patch" DisplayName="1M Inline Absorber - Amber 12G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="1" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="1963.495" />
+				<Length M="0.5" />
+				<Radius M="0.5" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="12" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="250" />
+				<MaxPower W="8350" />
+				<PowerPerGLoad W="2" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber1M_Violet" Modify="Patch" DisplayName="1M Inline Absorber - Violet 16G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="1" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="1963.495" />
+				<Length M="0.5" />
+				<Radius M="0.5" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="16" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="312.5" />
+				<MaxPower W="10000" />
+				<PowerPerGLoad W="2.3" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber2M_Green" Modify="Patch" DisplayName="2M Inline Absorber - Green 4G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="2" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="15707.963" />
+				<Length M="1" />
+				<Radius M="1" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="4" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="375" />
+				<MaxPower W="25000" />
+				<PowerPerGLoad W="1.235" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber2M_Cyan" Modify="Patch" DisplayName="2M Inline Absorber - Cyan 8G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="2" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="15707.963" />
+				<Length M="1" />
+				<Radius M="1" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="8" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="562.5" />
+				<MaxPower W="33250" />
+				<PowerPerGLoad W="1.615" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber2M_Amber" Modify="Patch" DisplayName="2M Inline Absorber - Amber 12G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="2" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="15707.963" />
+				<Length M="1" />
+				<Radius M="1" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="12" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="750" />
+				<MaxPower W="41750" />
+				<PowerPerGLoad W="1.9" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber2M_Violet" Modify="Patch" DisplayName="2M Inline Absorber - Violet 16G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="2" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="15707.963" />
+				<Length M="1" />
+				<Radius M="1" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="16" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="937.5" />
+				<MaxPower W="50000" />
+				<PowerPerGLoad W="2.185" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber3M_Green" Modify="Patch" DisplayName="3M Inline Absorber - Green 4G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="3" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="53014.376" />
+				<Length M="1.5" />
+				<Radius M="1.5" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="4" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="1000" />
+				<MaxPower W="80000" />
+				<PowerPerGLoad W="1.17" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber3M_Cyan" Modify="Patch" DisplayName="3M Inline Absorber - Cyan 8G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="3" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="53014.376" />
+				<Length M="1.5" />
+				<Radius M="1.5" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="8" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="1500" />
+				<MaxPower W="106400" />
+				<PowerPerGLoad W="1.53" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber3M_Amber" Modify="Patch" DisplayName="3M Inline Absorber - Amber 12G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="3" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="53014.376" />
+				<Length M="1.5" />
+				<Radius M="1.5" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="12" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="2000" />
+				<MaxPower W="133600" />
+				<PowerPerGLoad W="1.8" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber3M_Violet" Modify="Patch" DisplayName="3M Inline Absorber - Violet 16G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="3" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="53014.376" />
+				<Length M="1.5" />
+				<Radius M="1.5" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="16" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="2500" />
+				<MaxPower W="160000" />
+				<PowerPerGLoad W="2.07" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber4M_Green" Modify="Patch" DisplayName="4M Inline Absorber - Green 4G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="4" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="125663.706" />
+				<Length M="2" />
+				<Radius M="2" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="4" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="2500" />
+				<MaxPower W="250000" />
+				<PowerPerGLoad W="1.105" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber4M_Cyan" Modify="Patch" DisplayName="4M Inline Absorber - Cyan 8G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="4" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="125663.706" />
+				<Length M="2" />
+				<Radius M="2" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="8" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="3750" />
+				<MaxPower W="332500" />
+				<PowerPerGLoad W="1.445" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber4M_Amber" Modify="Patch" DisplayName="4M Inline Absorber - Amber 12G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="4" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="125663.706" />
+				<Length M="2" />
+				<Radius M="2" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="12" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="5000" />
+				<MaxPower W="417500" />
+				<PowerPerGLoad W="1.7" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_InlineAbsorber4M_Violet" Modify="Patch" DisplayName="4M Inline Absorber - Violet 16G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Structural" />
+			<EditorTag Ref="NoFaceSnapping" />
+		</EditorTags>
+		<Diameters Modify="Extend">
+			<Diameter M="4" />
+		</Diameters>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="125663.706" />
+				<Length M="2" />
+				<Radius M="2" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="16" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="6250" />
+				<MaxPower W="500000" />
+				<PowerPerGLoad W="1.955" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_RadialAbsorberCompact_Green" Modify="Patch" DisplayName="Compact Radial Absorber - Green 4G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Radial" />
+		</EditorTags>
+		<Connectors Modify="Extend">
+			<Connector Key="_connectorRadial" Modify="Patch">
+				<Flags>ToSurface</Flags>
+			</Connector>
+		</Connectors>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="392.699" />
+				<LocationAsmb Z="0.2" />
+				<Paf2Asmb Y="1.5708" />
+				<Length M="0.4" />
+				<Radius M="0.25" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="4" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="50" />
+				<MaxPower W="2500" />
+				<PowerPerGLoad W="1.3" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_RadialAbsorberCompact_Cyan" Modify="Patch" DisplayName="Compact Radial Absorber - Cyan 8G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Radial" />
+		</EditorTags>
+		<Connectors Modify="Extend">
+			<Connector Key="_connectorRadial" Modify="Patch">
+				<Flags>ToSurface</Flags>
+			</Connector>
+		</Connectors>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="392.699" />
+				<LocationAsmb Z="0.2" />
+				<Paf2Asmb Y="1.5708" />
+				<Length M="0.4" />
+				<Radius M="0.25" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="8" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="75" />
+				<MaxPower W="3325" />
+				<PowerPerGLoad W="1.7" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_RadialAbsorberCompact_Amber" Modify="Patch" DisplayName="Compact Radial Absorber - Amber 12G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Radial" />
+		</EditorTags>
+		<Connectors Modify="Extend">
+			<Connector Key="_connectorRadial" Modify="Patch">
+				<Flags>ToSurface</Flags>
+			</Connector>
+		</Connectors>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="392.699" />
+				<LocationAsmb Z="0.2" />
+				<Paf2Asmb Y="1.5708" />
+				<Length M="0.4" />
+				<Radius M="0.25" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="12" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="100" />
+				<MaxPower W="4175" />
+				<PowerPerGLoad W="2" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_RadialAbsorberCompact_Violet" Modify="Patch" DisplayName="Compact Radial Absorber - Violet 16G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Radial" />
+		</EditorTags>
+		<Connectors Modify="Extend">
+			<Connector Key="_connectorRadial" Modify="Patch">
+				<Flags>ToSurface</Flags>
+			</Connector>
+		</Connectors>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="392.699" />
+				<LocationAsmb Z="0.2" />
+				<Paf2Asmb Y="1.5708" />
+				<Length M="0.4" />
+				<Radius M="0.25" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="16" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="125" />
+				<MaxPower W="5000" />
+				<PowerPerGLoad W="2.3" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Green" Modify="Patch" DisplayName="Heavy Radial Absorber - Green 4G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Radial" />
+		</EditorTags>
+		<Connectors Modify="Extend">
+			<Connector Key="_connectorRadial" Modify="Patch">
+				<Flags>ToSurface</Flags>
+			</Connector>
+		</Connectors>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="1749.474" />
+				<LocationAsmb Z="0.275" />
+				<Paf2Asmb Y="1.5708" />
+				<Length M="0.55" />
+				<Radius M="0.45" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="4" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="200" />
+				<MaxPower W="15000" />
+				<PowerPerGLoad W="1.235" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Cyan" Modify="Patch" DisplayName="Heavy Radial Absorber - Cyan 8G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Radial" />
+		</EditorTags>
+		<Connectors Modify="Extend">
+			<Connector Key="_connectorRadial" Modify="Patch">
+				<Flags>ToSurface</Flags>
+			</Connector>
+		</Connectors>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="1749.474" />
+				<LocationAsmb Z="0.275" />
+				<Paf2Asmb Y="1.5708" />
+				<Length M="0.55" />
+				<Radius M="0.45" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="8" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="300" />
+				<MaxPower W="19950" />
+				<PowerPerGLoad W="1.615" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Amber" Modify="Patch" DisplayName="Heavy Radial Absorber - Amber 12G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Radial" />
+		</EditorTags>
+		<Connectors Modify="Extend">
+			<Connector Key="_connectorRadial" Modify="Patch">
+				<Flags>ToSurface</Flags>
+			</Connector>
+		</Connectors>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="1749.474" />
+				<LocationAsmb Z="0.275" />
+				<Paf2Asmb Y="1.5708" />
+				<Length M="0.55" />
+				<Radius M="0.45" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="12" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="400" />
+				<MaxPower W="25050" />
+				<PowerPerGLoad W="1.9" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+	<Part Id="AA_Prefab_RadialAbsorberHeavy_Violet" Modify="Patch" DisplayName="Heavy Radial Absorber - Violet 16G">
+		<EditorTags Modify="Extend">
+			<EditorTag Ref="Absorbers" />
+			<EditorTag Ref="Radial" />
+		</EditorTags>
+		<Connectors Modify="Extend">
+			<Connector Key="_connectorRadial" Modify="Patch">
+				<Flags>ToSurface</Flags>
+			</Connector>
+		</Connectors>
+		<InertMasses Modify="Extend">
+			<SolidCylinderMass>
+				<Mass Kg="1749.474" />
+				<LocationAsmb Z="0.275" />
+				<Paf2Asmb Y="1.5708" />
+				<Length M="0.55" />
+				<Radius M="0.45" />
+			</SolidCylinderMass>
+		</InertMasses>
+		<Components Modify="Extend">
+			<AccelerationAbsorber MaxGLoad="16" MinDelayMs="10" MaxDelayMs="30">
+				<BasePower W="500" />
+				<MaxPower W="30000" />
+				<PowerPerGLoad W="2.185" />
+				<PowerPerTonne W="1" />
+			</AccelerationAbsorber>
+		</Components>
+	</Part>
+</Assets>
