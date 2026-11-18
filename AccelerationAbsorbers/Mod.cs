@@ -103,24 +103,32 @@ public class AccelerationAbsorbers
 		{
 			ImGui.SetNextWindowPos(_savedWindowPosition.Value, ImGuiCond.Always);
 		}
+		float windowWidth = 360f * ImGuiHelper.InterfaceScale;
+		float maxWindowHeight = MathF.Max(0f, ImGui.GetMainViewport().WorkSize.Y - 32f * ImGuiHelper.InterfaceScale);
+		ImGui.SetNextWindowSizeConstraints(
+			new float2(windowWidth, 0f),
+			new float2(windowWidth, maxWindowHeight));
 		bool windowVisible = ConsoleStyle.BeginWindow(
 			"AccelerationAbsorbers",
 			"ACCELERATION ABSORBERS",
 			"KSA-AA",
 			ref _showAbsorbers,
-			new float2(720f, 900f) * ImGuiHelper.InterfaceScale);
+			new float2(windowWidth, 900f * ImGuiHelper.InterfaceScale),
+			extraFlags: ImGuiWindowFlags.AlwaysAutoResize,
+			pinToMainViewport: !Program.AllowMultipleWindows);
 		_windowPositionApplied = true;
 		if (!windowVisible)
 		{
 			return;
 		}
 
-		TrackWindowPosition(ImGui.GetWindowPos(), dt);
-		ConsoleStyle.BeginBody();
+		if (ImGui.GetWindowViewport().ID == ImGui.GetMainViewport().ID)
+		{
+			TrackWindowPosition(ImGui.GetWindowPos(), dt);
+		}
 		ConsoleStyle.PushWidgetStyle();
 		DrawDashboard(vehicle, entry);
 		ConsoleStyle.PopWidgetStyle();
-		ConsoleStyle.EndBody();
 		ConsoleStyle.EndWindow();
 		if (!_showAbsorbers)
 		{
@@ -137,83 +145,104 @@ public class AccelerationAbsorbers
 		ConsoleWidgets.RegionHeader("VEHICLE LOAD");
 		ConsoleWidgets.Readout("CONTROLLED VEHICLE", vehicle.Id);
 		ConsoleWidgets.RegionHeader("G-FORCE");
-		DrawGBar("Raw G", rawG, gScale);
+		DrawMeter("RAW G", $"{rawG:F2} g", rawG, gScale);
 		ConsoleWidgets.Readout("RAW AXES", $"X {entry.RawG.X:F2}, Y {entry.RawG.Y:F2}, Z {entry.RawG.Z:F2}");
-		DrawGBar("Experienced G", experiencedG, gScale);
+		DrawMeter("EXPERIENCED G", $"{experiencedG:F2} g", experiencedG, gScale);
 		DrawPowerWarning(entry, rawG);
 
 		ConsoleWidgets.RegionHeader("ABSORPTION CAPACITY");
-		ConsoleWidgets.Readout("ABSORBED / RATED", $"{entry.AbsorbedG:F2} / {entry.TotalCapacityG:F1} g");
-		DrawMeter(entry.AbsorbedG, entry.TotalCapacityG, _isPowerWarning, _isPowerDanger);
+		DrawMeter(
+			"ABSORBED / RATED",
+			$"{entry.AbsorbedG:F2} / {entry.TotalCapacityG:F1} g",
+			entry.AbsorbedG,
+			entry.TotalCapacityG,
+			_isPowerWarning,
+			_isPowerDanger);
 		ConsoleWidgets.Readout("DELIVERABLE", $"{entry.TotalDeliverableG:F1} g");
 		DrawPowerSummary(entry);
 
-		ConsoleWidgets.RegionHeader($"ABSORBERS - {entry.Modules.Length} INSTALLED");
-		ImGui.BeginChild("##AbsorberModuleList", new float2(0f, 0f), ImGuiChildFlags.Borders);
-		for (int i = 0; i < entry.Modules.Length; i++)
+		if (ImGui.CollapsingHeader($"ABSORBERS - {entry.Modules.Length} INSTALLED"))
 		{
-			AbsorberModuleRow row = entry.Modules[i];
-			AccelerationAbsorber module = row.Module;
-			ImGui.PushID(i);
-			ConsoleWidgets.BeginRow(row.Label);
-			bool enabled = module.Enabled;
-			if (ConsoleWidgets.Checkbox("##Enabled", ref enabled, pending: false))
+			for (int i = 0; i < entry.Modules.Length; i++)
 			{
-				module.SetEnabledFromManagementUi(enabled);
-			}
-			ConsoleWidgets.EndRow();
+				AbsorberModuleRow row = entry.Modules[i];
+				AccelerationAbsorber module = row.Module;
+				ImGui.PushID(i);
+				bool expanded = ImGui.CollapsingHeader(row.Label);
 
-			string state = !module.Enabled ? "Disabled" : (row.Active ? "Active" : "No power");
-			ConsoleWidgets.Readout(row.PowerLimited && module.Enabled ? "STATUS - POWER LIMITED" : "STATUS", state);
-			ConsoleWidgets.Readout("ABSORBED / RATED", $"{row.AbsorbedG:F2} / {row.MaxGLoad:F1} g");
-			DrawMeter(row.AbsorbedG, row.MaxGLoad, row.PowerLimited && module.Enabled);
-			if (row.MaxPowerW > 0.0)
-			{
-				ConsoleWidgets.Readout("ELECTRICITY", $"{row.ConsumedWatts:F0} / {row.MaxPowerW:F0} W");
-				double powerFraction = Fraction(row.ConsumedWatts, row.MaxPowerW);
-				DrawMeter(powerFraction, 1.0, powerFraction >= 0.85, powerFraction >= 0.95);
+				if (expanded)
+				{
+					bool enabled = module.Enabled;
+					ConsoleWidgets.BeginRow("ENABLED");
+					if (ConsoleWidgets.Checkbox("##Enabled", ref enabled, pending: false))
+					{
+						module.SetEnabledFromManagementUi(enabled);
+					}
+					ConsoleWidgets.EndRow();
+
+					string state = !module.Enabled ? "Disabled" : (row.Active ? "Active" : "No power");
+					ConsoleWidgets.Readout(row.CurrentlyPowerLimited && module.Enabled ? "STATUS - POWER LIMITED" : "STATUS", state);
+					DrawMeter(
+						"ABSORBED / RATED",
+						$"{row.AbsorbedG:F2} / {row.MaxGLoad:F1} g",
+						row.AbsorbedG,
+						row.MaxGLoad,
+						row.CurrentlyPowerLimited && module.Enabled);
+					if (row.MaxPowerW > 0.0)
+					{
+						double powerFraction = row.ConsumedWatts / row.MaxPowerW;
+						DrawMeter(
+							"ELECTRICITY",
+							$"{row.ConsumedWatts:F0} / {row.MaxPowerW:F0} W",
+							row.ConsumedWatts,
+							row.MaxPowerW,
+							powerFraction >= 0.85,
+							powerFraction >= 0.95);
+					}
+					else
+					{
+						ConsoleWidgets.Readout("ELECTRICITY", $"{row.ConsumedWatts:F0} W / uncapped");
+					}
+					ConsoleWidgets.Rule();
+				}
+				ImGui.PopID();
 			}
-			else
-			{
-				ConsoleWidgets.Readout("ELECTRICITY", $"{row.ConsumedWatts:F0} W / uncapped");
-			}
-			ConsoleWidgets.Rule();
-			ImGui.PopID();
 		}
-		ImGui.EndChild();
 	}
 
-	private static void DrawGBar(string label, double value, double scale)
-	{
-		ConsoleWidgets.Readout(label, $"{value:F2} g");
-		DrawMeter(value, scale);
-	}
-
-	private static void DrawMeter(double value, double capacity, bool pending = false, bool danger = false)
+	private static void DrawMeter(string label, string text, double value, double capacity, bool pending = false, bool danger = false)
 	{
 		ConsoleStyle.EnsureInitialized();
 		float width = ConsoleStyle.ContentAvailWidth();
-		float height = MathF.Max(8f, ConsoleStyle.FrameHeightPx * 0.5f);
+		float height = MathF.Max(24f, ConsoleStyle.FrameHeightPx * 1.2f);
 		float fraction = Fraction(value, capacity);
 		float2 min = ImGui.GetCursorScreenPos();
 		float2 max = min + new float2(width, height);
 		var drawList = ImGui.GetWindowDrawList();
+		float rounding = MathF.Min(ConsoleStyle.FrameRoundingPx, height * 0.5f);
 
-		drawList.AddRectFilled(in min, in max, ConsoleStyle.ApplyAlpha(ConsoleStyle.InsetU32), ConsoleStyle.FrameRoundingPx);
+		drawList.AddRectFilled(in min, in max, 0x99000000, rounding);
 		float fillWidth = width * fraction;
 		if (fillWidth > 0f)
 		{
 			uint fillColor = danger ? ConsoleStyle.DangerU32 : (pending ? ConsoleStyle.PendingU32 : ConsoleStyle.ActiveToolU32);
 			float2 fillMax = new float2(min.X + fillWidth, max.Y);
-			drawList.AddRectFilled(in min, in fillMax, ConsoleStyle.ApplyAlpha(fillColor), ConsoleStyle.FrameRoundingPx, ImDrawFlags.RoundCornersLeft);
+			float fillRounding = MathF.Min(rounding, fillWidth * 0.5f);
+			drawList.AddRectFilled(in min, in fillMax, ConsoleStyle.ApplyAlpha(fillColor), fillRounding, ImDrawFlags.RoundCornersAll);
 		}
-		drawList.AddRect(in min, in max, ConsoleStyle.ApplyAlpha(ConsoleStyle.FrameU32), ConsoleStyle.FrameRoundingPx, ImDrawFlags.None, ConsoleStyle.WindowBorderThicknessPx);
-		drawList.AddLine(
-			new float2(min.X + ConsoleStyle.FrameRoundingPx, min.Y + ConsoleStyle.BezelInsetPx),
-			new float2(max.X - ConsoleStyle.FrameRoundingPx, min.Y + ConsoleStyle.BezelInsetPx),
-			ConsoleStyle.ApplyAlpha(ConsoleStyle.TopHighlightU32),
-			ConsoleStyle.WindowBorderThicknessPx);
-		ImGui.Dummy(new float2(width, height));
+
+		ConsoleStyle.PushValueFont();
+		string displayText = $"{label}  {text}";
+		float textHeight = ImGui.GetTextLineHeight();
+		float textWidth = MathF.Min(width - 16f, ImGui.CalcTextSize(displayText).X + 8f);
+		float2 textMin = min + new float2(4f, (height - textHeight) * 0.5f);
+		float2 textMax = textMin + new float2(textWidth, textHeight);
+		drawList.AddRectFilled(in textMin, in textMax, 0x99000000, MathF.Min(rounding, textHeight * 0.5f));
+
+		ImGui.SetCursorScreenPos(textMin + new float2(4f, 0f));
+		ImGui.Text(displayText);
+		ImGui.SetCursorScreenPos(min + new float2(0f, height + ImGui.GetStyle().ItemSpacing.Y));
+		ConsoleStyle.PopFont();
 	}
 
 	private static void DrawPowerSummary(VehicleAbsorberTelemetry entry)
@@ -236,8 +265,7 @@ public class AccelerationAbsorbers
 		}
 		else
 		{
-			ConsoleWidgets.Readout("ELECTRICITY", $"{entry.TotalPowerW:F0} / {maxPowerW:F0} W");
-			DrawMeter(entry.TotalPowerW, maxPowerW);
+			DrawMeter("ELECTRICITY", $"{entry.TotalPowerW:F0} / {maxPowerW:F0} W", entry.TotalPowerW, maxPowerW);
 		}
 	}
 

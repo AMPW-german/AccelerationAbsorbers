@@ -15,6 +15,8 @@ internal struct AbsorberModuleRow
 
 	public bool PowerLimited;
 
+	public bool CurrentlyPowerLimited;
+
 	public double ConsumedWatts;
 
 	public double CommandedG;

@@ -210,6 +210,7 @@ internal static class AbsorberMeasurement
 				Enabled = module.Enabled,
 				Active = state.Active,
 				PowerLimited = state.PowerLimited,
+				CurrentlyPowerLimited = state.TargetAbsorptionG > state.CommandedAbsorptionG + 1e-6,
 				ConsumedWatts = state.ConsumedWatts.Value(),
 				CommandedG = state.CommandedAbsorptionG,
 				AbsorbedG = state.AbsorbedGThisStep,

@@ -124,7 +124,3 @@ The 1 G column uses `G = 1`; the max-G column uses that rating's `MaxGLoad`. The
 - `PowerPerGLoad` and `PowerPerTonne` multiply in the current implementation. Keep `PowerPerTonne` at `1` when using the table so the listed `k` values remain easy to compare.
 - Because lower ratings have both lower G ceilings and lower draw, stacking several low-rated units may be more attractive than installing a high-rated unit. Part mass, manufacturing cost, attachment count, and available power should help make that a real tradeoff.
 - These parts affect measured/experienced G, not vehicle trajectory or delta-v.
-
-## Existing content example
-
-`AccelerationAbsorbers/Content/AccelerationAbsorbers.xml` currently patches a command capsule with a 20 G module and a 50–200 ms delay. That is the existing module example, not one of the proposed part variants. Update or remove it when the new parts are implemented so it does not leave an inconsistent example in the shipped content.

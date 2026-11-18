@@ -637,5 +637,4 @@ Not affected: trajectory/delta-v/fuel, `DeltaVelocityCci`, `AngularAccelerationB
 - [x] `Mod.cs`: service registration via `IModServiceRegistry`; management ImGui window reading the telemetry store; keep/adjust welcome window.
 - [x] Build `dotnet build -c Release`; fix compile issues.
 - [x] Power draw cap (`MaxPower`) + deliverable-capacity throttle bonus.
-- [ ] In-game verification (ksa-launch): spawn patched part, confirm module creates, battery drains, console G-readout shows reduced G under thrust, no destruction at >limit G, engines not throttled below absorbed envelope, gas-giant-style surface G absorbed, per-part toggle works + propagates to symmetric parts, management window shows all absorbers/raw G, save/load round-trip preserves toggles, heavy ships get proportionally less absorption under the power cap.
-- [ ] (Later, separate repo) KSAGEffects optional-dependency integration.
+- [x] In-game verification (ksa-launch): spawn patched part, confirm module creates, battery drains, console G-readout shows reduced G under thrust, no destruction at >limit G, engines not throttled below absorbed envelope, gas-giant-style surface G absorbed, per-part toggle works + propagates to symmetric parts, management window shows all absorbers/raw G, save/load round-trip preserves toggles, heavy ships get proportionally less absorption under the power cap.

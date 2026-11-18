@@ -14,7 +14,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\AccelerationAbsorbers.Contracts\AccelerationAbsorbers.Contracts.csproj" />
-		<None Include="Content\AccelerationAbsorbers.xml" ModManifestArray="assets" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="Content\AccelerationAbsorbersPartsAssets.xml" ModManifestArray="assets" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="Content\AccelerationAbsorbersPartsGameData.xml" ModManifestArray="assets" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="Content\Meshes\**\*.glb" CopyToOutputDirectory="PreserveNewest" />
