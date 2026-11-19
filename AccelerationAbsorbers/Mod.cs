@@ -153,12 +153,12 @@ public class AccelerationAbsorbers
 		ConsoleWidgets.RegionHeader("ABSORPTION CAPACITY");
 		DrawMeter(
 			"ABSORBED / RATED",
-			$"{entry.AbsorbedG:F2} / {entry.TotalCapacityG:F1} g",
+			$"{entry.AbsorbedG:F2} / {FormatGCapacity(entry.TotalCapacityG)}",
 			entry.AbsorbedG,
 			entry.TotalCapacityG,
 			_isPowerWarning,
 			_isPowerDanger);
-		ConsoleWidgets.Readout("DELIVERABLE", $"{entry.TotalDeliverableG:F1} g");
+		ConsoleWidgets.Readout("DELIVERABLE", FormatGCapacity(entry.TotalDeliverableG));
 		DrawPowerSummary(entry);
 
 		if (ImGui.CollapsingHeader($"ABSORBERS - {entry.Modules.Length} INSTALLED"))
@@ -184,7 +184,7 @@ public class AccelerationAbsorbers
 					ConsoleWidgets.Readout(row.CurrentlyPowerLimited && module.Enabled ? "STATUS - POWER LIMITED" : "STATUS", state);
 					DrawMeter(
 						"ABSORBED / RATED",
-						$"{row.AbsorbedG:F2} / {row.MaxGLoad:F1} g",
+						$"{row.AbsorbedG:F2} / {FormatGCapacity(row.MaxGLoad)}",
 						row.AbsorbedG,
 						row.MaxGLoad,
 						row.CurrentlyPowerLimited && module.Enabled);
@@ -208,6 +208,11 @@ public class AccelerationAbsorbers
 				ImGui.PopID();
 			}
 		}
+	}
+
+	private static string FormatGCapacity(double capacityG)
+	{
+		return double.IsPositiveInfinity(capacityG) ? "unlimited" : $"{capacityG:F1} g";
 	}
 
 	private static void DrawMeter(string label, string text, double value, double capacity, bool pending = false, bool danger = false)

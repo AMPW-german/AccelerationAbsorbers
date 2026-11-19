@@ -71,9 +71,14 @@ public static class ThrottleCapPatch
 	public static void SolveGLoadThrottleCapPrefix(FlightComputer __instance, out float __state)
 	{
 		__state = __instance.MaxGLoad;
-		if (ThrottleBonusG.TryGet(__instance, out double bonusG) && bonusG > 0.0)
+		if (ThrottleBonusG.TryGet(__instance, out double bonusG) && double.IsPositiveInfinity(bonusG))
 		{
-			__instance.MaxGLoad += (float)(bonusG / GLoadSafetyFactor);
+			__instance.MaxGLoad = float.MaxValue;
+		}
+		else if (bonusG > 0.0)
+		{
+			double adjustedMaxGLoad = __instance.MaxGLoad + bonusG / GLoadSafetyFactor;
+			__instance.MaxGLoad = (float)Math.Min(adjustedMaxGLoad, float.MaxValue);
 		}
 	}
 
@@ -198,7 +203,7 @@ internal static class AbsorberMeasurement
 			state.LastRawG = rawG;
 			state.LastRawGSimSeconds = now;
 			state.AbsorbedGThisStep = sumEffective > 0.0 ? absorbed * effective / sumEffective : 0.0;
-			capacityG += module.MaxGLoad;
+			capacityG += module.GLoadLimit;
 			powerW += state.ConsumedWatts.Value();
 			if (state.Active)
 			{
@@ -214,7 +219,7 @@ internal static class AbsorberMeasurement
 				ConsumedWatts = state.ConsumedWatts.Value(),
 				CommandedG = state.CommandedAbsorptionG,
 				AbsorbedG = state.AbsorbedGThisStep,
-				MaxGLoad = module.MaxGLoad,
+				MaxGLoad = module.GLoadLimit,
 				MaxPowerW = module.MaxPower.Value(),
 				Module = module
 			};

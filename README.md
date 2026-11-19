@@ -1,50 +1,83 @@
-# AccelerationAbsorbers
+# Acceleration Absorbers
 
-KSA mod to absorb high acceleration
+![Acceleration Absorbers](aa_cover.png)
 
-A [Kitten Space Agency](https://kittenspaceagency.com) (KSA) code mod built on
-[KSAModTools](https://github.com/AMPW-german/KSAModTools) and
-[StarMap](https://github.com/StarMapLoader/StarMap).
+Acceleration Absorbers adds powered modules that reduce the acceleration loads
+experienced by your vehicle in [Kitten Space Agency](https://kittenspaceagency.com).
+The in-game dashboard shows vehicle G-forces, absorber capacity, electricity use,
+and power-limit warnings. Open it from the **Acceleration Absorbers** mod menu.
 
-## Layout
+## Parts
 
-- `AccelerationAbsorbers/AccelerationAbsorbers.csproj` — the mod project (imports `tooling/msbuild/KsaMod.props` / `KsaMod.targets`)
-- `AccelerationAbsorbers/Mod.cs` — `[StarMapMod]` entry point: applies Harmony patches and draws the controlled-vehicle absorber dashboard
-- `AccelerationAbsorbers/Patches.cs` — example Harmony prefix patch
-- `tooling/` — KSAModTools submodule (MSBuild props/targets and CI actions)
-- `.github/workflows/build.yml` — CI: builds, packages and releases the mod
+Choose from two radial designs, Compact and Heavy, or inline units in 1 m, 2 m,
+3 m, and 4 m lengths. Each form factor comes in four G ratings: **4 G (Green)**,
+**8 G (Cyan)**, **12 G (Amber)**, and **16 G (Violet)**. The Heavy Radial also
+has a cage-free cosmetic variant.
 
-## Build locally
+## Power and balance
 
-Requires the .NET 10 SDK and the KSA game files — either a local install
-(default `C:\Program Files\Kitten Space Agency`, override with `KSA_DIR` /
-`KSADir`) or a KSADLLs snapshot via `KSA_DLL_REPO_DIR` with
-`UseKsaNuGetPackages=true`. StarMap.API is referenced from a StarMap install
-in your KSA mods folder (`StarMap/StarMap.API.dll`, override with `KSA_MODS_DIR`).
+Absorber power draw depends on the vehicle's mass and commanded G-load:
 
-```sh
-dotnet build -c Release
+```text
+requested power = BasePower + vehicle mass (tonnes) × commanded G × k
+k = PowerPerGLoad × PowerPerTonne
 ```
 
-The build packages the mod into `Release/AccelerationAbsorbers/` and copies it into your
-local KSA mods folder automatically.
+`MaxPower` caps the draw; when a module reaches its cap, it delivers less G than
+its rating. For the complete part lineup, power values, and balance details, see
+[Parts and Balance](PARTS_AND_BALANCE.md).
 
-## CI
+All variants have a **10–30 ms response delay**. This is negligible for most
+builds, but during abrupt, extreme acceleration changes the unabsorbed portion
+can temporarily exceed the vehicle's structural limit.
 
-`.github/workflows/build.yml` ships with automatic triggers disabled
-(`workflow_dispatch` only) so it does nothing until secrets are configured.
-To enable it, uncomment the `push`/`pull_request` triggers and set up:
+## XML configuration
 
-| Secret / variable | Purpose |
-| --- | --- |
-| `KSADLLRepo` (secret) | `owner/repo` of a private KSA DLL snapshot repo (game DLLs + `ksa-versions.csv` + `KsaNuGet.props`; KSAModTools' `scripts/update_ksa_dlls.py` generates one) |
-| `KSA_DLL_TOKEN` (secret) | PAT with read access to that repo — simpler alternative to the App below |
-| `APP_ID` + `APP_PRIVATE_KEY` (secrets) | GitHub App credentials for the DLL repo, alternative to `KSA_DLL_TOKEN` |
-| `SPACEDOCKUSERNAME` (variable) | your SpaceDock username |
-| `SPACEDOCKAUTH` (secret) | your SpaceDock API token |
-| `SPACEDOCK_ID` | set in `build.yml` — your mod's SpaceDock ID |
+The absorber ratings, power values, and delay bounds are configurable per part
+in `AccelerationAbsorbers/Content/AccelerationAbsorbersPartsGameData.xml`, in
+each part's `<AccelerationAbsorber>` component under `<Components>`. The G
+limit and delay bounds are attributes; the power settings are child elements
+whose values use a `W` attribute. For example:
 
-On pushes to `main` that change `VersionPrefix`, the workflow also publishes a
-GitHub release and uploads the package to SpaceDock.
+```xml
+<AccelerationAbsorber MaxGLoad="16" MinDelayMs="10" MaxDelayMs="30">
+  <BasePower W="312.5" />
+  <MaxPower W="10000" />
+  <PowerPerGLoad W="2.3" />
+  <PowerPerTonne W="1" />
+</AccelerationAbsorber>
+```
+
+- `MaxGLoad` sets the absorption ceiling in G.
+- `MinDelayMs` and `MaxDelayMs` set the response-delay range in milliseconds.
+- `BasePower` is the fixed per-module draw in watts.
+- `PowerPerGLoad` and `PowerPerTonne` are multiplied together to set the
+  mass- and G-dependent draw described above.
+- `MaxPower` sets the per-module power cap in watts. If the requested draw
+  exceeds it, the module delivers less G.
+
+Zero values are field-specific:
+
+- `MaxPower W="0"` disables the power cap (uncapped draw); it does not disable
+  the module.
+- `MaxGLoad="0"` removes the G-load ceiling. Absorption is still limited by
+  `MaxPower` and available electricity.
+- Set both `MinDelayMs="0"` and `MaxDelayMs="0"` to remove the configured
+  response delay.
+- `BasePower W="0"` removes the fixed draw. Setting either `PowerPerGLoad W="0"`
+  or `PowerPerTonne W="0"` removes the mass- and G-dependent draw.
+
+Requires [StarMap](https://github.com/StarMapLoader/StarMap).
+
+Inspired by the [Andruckabsorber](https://www.perrypedia.de/wiki/Andruckabsorber)
+from Perry Rhodan.
+
+**Balance note:** The parts were designed for much higher electricity
+availability, not the current power system in KSA `2026.11.16.5901` (as of
+`2026-11-19`).
+
+**License:** GPLv3. See [LICENSE](LICENSE).
+
+---
 
 Generated from [KSAModTemplate](https://github.com/AMPW-german/KSAModTemplate).

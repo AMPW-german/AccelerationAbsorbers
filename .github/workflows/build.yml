@@ -4,11 +4,10 @@ permissions:
   contents: write
 
 on:
-  # Automatic triggers are disabled until CI secrets are configured — see README.md "CI setup".
-  # push:
-  #   branches:
-  #     - main
-  # pull_request:
+  push:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -21,7 +20,6 @@ jobs:
       release_needed: ${{ steps.build.outputs.release_needed }}
     env:
       KSA_DLL_REPO: ${{ secrets.KSADLLRepo }}
-      KSA_DLL_TOKEN: ${{ secrets.KSA_DLL_TOKEN }}
       KSA_DLL_APP_ID: ${{ secrets.APP_ID }}
       KSA_DLL_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     steps:
@@ -41,7 +39,7 @@ jobs:
     needs: build-package
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.build-package.outputs.release_needed == 'true' }}
     env:
-      SPACEDOCK_ID: 'TODO'
+      SPACEDOCK_ID: '4861'
       SPACEDOCK_USERNAME: ${{ vars.SPACEDOCKUSERNAME }}
       SPACEDOCK_AUTH: ${{ secrets.SPACEDOCKAUTH }}
     steps:

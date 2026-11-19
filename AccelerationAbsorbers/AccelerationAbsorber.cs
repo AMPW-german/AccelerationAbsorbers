@@ -129,6 +129,10 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 
 	public double MaxGLoad;
 
+	public bool IsGLoadUnlimited { get; private set; }
+
+	public double GLoadLimit => IsGLoadUnlimited ? double.PositiveInfinity : MaxGLoad;
+
 	public double MinDelayMs;
 
 	public double MaxDelayMs;
@@ -187,6 +191,7 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 					PowerPerTonne = new Watts((float)(double)template2.PowerPerTonne),
 					MaxPower = new Watts((float)(double)template2.MaxPower),
 					MaxGLoad = double.IsFinite(template2.MaxGLoad) && template2.MaxGLoad > 0.0 ? template2.MaxGLoad : 0.0,
+					IsGLoadUnlimited = double.IsFinite(template2.MaxGLoad) && template2.MaxGLoad == 0.0,
 					MinDelayMs = double.IsFinite(template2.MinDelayMs) ? Math.Max(0.0, template2.MinDelayMs) : 0.0,
 					MaxDelayMs = double.IsFinite(template2.MaxDelayMs) ? Math.Max(0.0, template2.MaxDelayMs) : 0.0,
 					PowerManager = new PowerManager(part)
@@ -244,16 +249,17 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 				delayedG[index] = module.TickDelayQueue(context.Step, rawG);
 				double capWatts = module.MaxPower.Value();
 				double deliverableDenom = massTonnes * module.PowerPerGLoad.Value() * module.PowerPerTonne.Value();
-				double theoreticalG = module.MaxGLoad;
+				double maxGLoad = module.GLoadLimit;
+				double theoreticalG = maxGLoad;
 				if (!module.Enabled)
 				{
 					theoreticalG = 0.0;
 				}
 				else if (capWatts > 0.0 && deliverableDenom > 1e-12)
 				{
-					theoreticalG = Math.Min(module.MaxGLoad, Math.Max(0.0, (capWatts - module.BasePower.Value()) / deliverableDenom));
+					theoreticalG = Math.Min(maxGLoad, Math.Max(0.0, (capWatts - module.BasePower.Value()) / deliverableDenom));
 				}
-				current.State.PowerLimited = module.Enabled && capWatts > 0.0 && theoreticalG + 1e-6 < module.MaxGLoad;
+				current.State.PowerLimited = module.Enabled && capWatts > 0.0 && theoreticalG + 1e-6 < maxGLoad;
 				deliverableG[index] = theoreticalG;
 				double moduleEffectiveG = theoreticalG;
 				if (theoreticalG > 0.0)
@@ -264,22 +270,29 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 					}
 					else
 					{
-						if (module._effectiveDeliverableG < 0.0)
+						if (double.IsPositiveInfinity(theoreticalG))
+						{
+							moduleEffectiveG = rawG;
+						}
+						else if (module._effectiveDeliverableG < 0.0)
 						{
 							module._effectiveDeliverableG = theoreticalG;
 						}
-						AccelerationAbsorberState prevState = current.State;
-						bool wasPowerLimited = prevState.TargetAbsorptionG > prevState.CommandedAbsorptionG + 1e-6;
-						if (wasPowerLimited)
+						if (double.IsFinite(theoreticalG))
 						{
-							module._effectiveDeliverableG = Math.Min(theoreticalG, Math.Max(0.0, prevState.CommandedAbsorptionG));
+							AccelerationAbsorberState prevState = current.State;
+							bool wasPowerLimited = prevState.TargetAbsorptionG > prevState.CommandedAbsorptionG + 1e-6;
+							if (wasPowerLimited)
+							{
+								module._effectiveDeliverableG = Math.Min(theoreticalG, Math.Max(0.0, prevState.CommandedAbsorptionG));
+							}
+							else
+							{
+								double recover = 1.0 - Math.Exp(-context.Step.DeltaTime / EffectiveDeliverableTauSeconds);
+								module._effectiveDeliverableG = Math.Min(theoreticalG, module._effectiveDeliverableG + (theoreticalG - module._effectiveDeliverableG) * recover);
+							}
+							moduleEffectiveG = Math.Max(0.0, module._effectiveDeliverableG);
 						}
-						else
-						{
-							double recover = 1.0 - Math.Exp(-context.Step.DeltaTime / EffectiveDeliverableTauSeconds);
-							module._effectiveDeliverableG = Math.Min(theoreticalG, module._effectiveDeliverableG + (theoreticalG - module._effectiveDeliverableG) * recover);
-						}
-						moduleEffectiveG = Math.Max(0.0, module._effectiveDeliverableG);
 					}
 				}
 				effectiveG[index++] = moduleEffectiveG;
@@ -362,7 +375,9 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 					double actualWatts = amountChanged.Differentiate(context.Step.DeltaTime).Value();
 					current.State.ConsumedWatts = new Watts((float)actualWatts);
 					double absorptionBudget = Math.Max(0.0, actualWatts - overheadWatts);
-					double powerScale = absorptionWattsRequired > 1e-9 ? Math.Clamp(absorptionBudget / absorptionWattsRequired, 0.0, 1.0) : 1.0;
+					double powerScale = absorptionWattsRequired > 1e-9
+						? Math.Clamp(absorptionBudget / absorptionWattsRequired, 0.0, 1.0)
+						: (actualWatts >= overheadWatts ? 1.0 : 0.0);
 					current.State.TargetAbsorptionG = commandedG;
 					current.State.CommandedAbsorptionG = commandedG * powerScale;
 					current.State.PowerLimited |= powerScale < 1.0 - 1e-6;
@@ -374,7 +389,7 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 					current.State.Active = false;
 					current.State.PowerLimited |= module.Enabled;
 				}
-				globalState.TotalCapacityG += module.MaxGLoad;
+				globalState.TotalCapacityG += module.GLoadLimit;
 				globalState.TotalDeliverableG += moduleDeliverableG;
 				globalState.TotalCommandedG += current.State.CommandedAbsorptionG;
 				globalState.TotalPowerW += current.State.ConsumedWatts.Value();
@@ -549,7 +564,8 @@ public class AccelerationAbsorber : ModuleStateful<AccelerationAbsorber, Acceler
 			PowerReference.ToNearest(MaxPower.Value(), ref capSb);
 			ImGuiHelper.DrawTextWidget("Power cap:"u8, capSb);
 		}
-		ImGuiHelper.DrawTextWidget("Absorbing:"u8, $"{state.CommandedAbsorptionG:F1} / {MaxGLoad:F1} g");
+		string limit = IsGLoadUnlimited ? "unlimited" : $"{MaxGLoad:F1} g";
+		ImGuiHelper.DrawTextWidget("Absorbing:"u8, $"{state.CommandedAbsorptionG:F1} / {limit}");
 		PartTree? tree = Parent.FullPart.Tree;
 		if (tree != null && ModuleStateful<AccelerationAbsorber, AccelerationAbsorberState, AccelerationAbsorberGlobalState, EmptyStruct>.TryGetFrom(tree.States, out ModuleStateful<AccelerationAbsorber, AccelerationAbsorberState, AccelerationAbsorberGlobalState, EmptyStruct>.StateList typeStates))
 		{
